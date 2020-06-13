@@ -1,16 +1,18 @@
 # ICE
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ An interactive java style/convention editor, based on the guidelines as specified in the course CS 61B.
+ The application is made using Flutter, and both the backend and UI are written in Dart. 
+ Users can upload .java files and choose certain editing filters to be applied so that the code in those files can fit certain style parameters. 
+ 
+ ## preliminary interface:
+ 
+ Homepage: 
+ ![](assets/homepage.png)
+ 
+ Uploading a file: 
+ ![](assets/upload_norm.png)
+ 
+ Error while attempting upload a non .java file:
+ ![](assets/upload_err.png)
+ 
+ Choose which operation to apply: 
+ ![](assets/options.png)
