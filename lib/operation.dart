@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:ICE/directory.dart';
 import 'package:ICE/filedownload.dart';
 import 'package:ICE/indentations.dart';
-import 'package:ICE/main.dart';
 import 'package:ICE/singlelines.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
