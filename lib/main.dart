@@ -58,6 +58,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Text getText(double size, String text, Color color) {
+    return Text(text,
+      style: TextStyle(
+        fontFamily: 'Open Sans',
+        fontWeight: FontWeight.w300,
+        fontSize: size,
+        color: color,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -84,38 +95,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: blockSize * 30,
                     height: blockSize * 30,
                   ),
-                  Text(
-                    'Welcome to ICE',
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      fontSize: blockSize * 8,
-                      color: midCyan,
-                    ),
-                  ),
-                  Text(
-                    '(Interactive Convention Editor)',
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      fontSize: blockSize * 2,
-                      color: midCyan,
-                    ),
-                  ),
+                  getText(blockSize * 8, 'Welcome to ICE', midCyan),
+                  getText(blockSize * 2, '(Interactive Convention Editor)', midCyan),
                   Text(''),
-                  Text(
+                  getText(
+                    blockSize * 1.3,
                     'We all have faced issues with the 200+ style check' + 
                     ' errors that appear right when we are ready to submit ' + 
                     'our CS 61B projects.\nIn three easy steps you can get rid of many style check errors from your project.',
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      fontSize: blockSize * 1.3,
-                      color: darkCyan,
-                    ),
+                    darkCyan
                   ),
                   Text("\n"),
                   Text(

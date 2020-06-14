@@ -35,8 +35,9 @@ class MyFileDownloadPage extends StatefulWidget {
 }
 
 class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
- 
+
   String cleanFilename(String name) {
+    name = name.replaceAll(" ", "_");
     if (name == "") {
       return "File1.java";
     } else if (!name.contains(".") && !name.contains(".java")) {
@@ -47,6 +48,14 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
     } else {
       return name;
     }
+  }
+
+  void downloadFile() {
+    filename = cleanFilename(textController.text);
+    final text = MyOperationPage.getFileContents();
+    final bytes = utf8.encode(text);
+    final blob = html.Blob([bytes]);
+    js.context.callMethod("webSaveAs", [blob, filename]);
   }
 
   void mainInfoPage(BuildContext context) {
@@ -68,11 +77,44 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
     );
   }
 
+  Text getText(double size, String text, Color color) {
+    return Text(text,
+      style: TextStyle(
+        fontFamily: 'Open Sans',
+        fontWeight: FontWeight.w300,
+        fontSize: size,
+        color: color,
+      ),
+    );
+  }
+
+  RaisedButton getButton(var method, String buttonText, double size) {
+    return RaisedButton(
+      onPressed: () {method(context);},
+      color: midCyan,
+      elevation: 0,
+      focusElevation: 1.5,
+      disabledColor: darkCyan,
+      textColor: lightCyan,
+      padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+      clipBehavior: Clip.none,
+      child: Container(
+        child: Text(
+          buttonText,
+          style: TextStyle(
+            fontFamily: "Open Sans",
+            fontSize: size,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
-
     return Scaffold(
       body: Center(
         child: Container(
@@ -81,25 +123,12 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget> [
-              Text(
-                'Download your file',
-                style: TextStyle(
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.w300,
-                  fontSize: blockSize * 5.5,
-                  color: midCyan,
-                ),
-              ),
-              Text(
+              getText(blockSize * 5.5, 'Download your file', midCyan),
+              getText(
+                blockSize * 1.5,
                 'Type in the name you want for the file (ex. filename.java) and then click "Download File."\n' +
                 'If you do not enter a name for the file we will give it a generic name:\n\n',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.w300,
-                  fontSize: blockSize * 1.5,
-                  color: darkCyan,
-                ),
+                darkCyan,
               ),
               Container(
                 width: 450,
@@ -133,13 +162,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
               ),
               Text("\n\n"),
               RaisedButton(
-                onPressed: () async {
-                  filename = cleanFilename(textController.text);
-                  final text = MyOperationPage.getFileContents();
-                  final bytes = utf8.encode(text);
-                  final blob = html.Blob([bytes]);
-                  js.context.callMethod("webSaveAs", [blob, filename]);
-                },
+                onPressed: () async {downloadFile();},
                 color: midCyan,
                 elevation: 0,
                 focusElevation: 1.5,
@@ -148,11 +171,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
                 padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                 clipBehavior: Clip.none,
                 child: Container(
-                  child: const Text(
+                  child: Text(
                     'Download File',
                     style: TextStyle(
                       fontFamily: "Open Sans",
-                      fontSize: 18,
+                      fontSize: blockSize * 1.4,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -162,51 +185,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RaisedButton(
-                    onPressed: () {
-                      chooseFilePage(context);
-                    },
-                    color: midCyan,
-                    elevation: 0,
-                    focusElevation: 1.5,
-                    disabledColor: darkCyan,
-                    textColor: lightCyan,
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    clipBehavior: Clip.none,
-                    child: Container(
-                      child: const Text(
-                        'Choose New File',
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ),
-                  ),
+                  getButton(chooseFilePage, 'Choose New File', blockSize * 1.4),
                   Text("\t\t"),
-                  RaisedButton(
-                    onPressed: () {
-                      mainInfoPage(context);
-                    },
-                    color: midCyan,
-                    elevation: 0,
-                    focusElevation: 1.5,
-                    disabledColor: darkCyan,
-                    textColor: lightCyan,
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    clipBehavior: Clip.none,
-                    child: Container(
-                      child: const Text(
-                        'Go To Main Page',
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ),
-                  ),
+                  getButton(mainInfoPage, 'Go To Main Page', blockSize * 1.4),
                 ],
               ),
             ],

@@ -7,6 +7,7 @@ import 'package:ICE/singlelines.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
 import 'package:ICE/whitespace.dart';
+import 'package:flutter/services.dart';
 
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
@@ -137,35 +138,12 @@ class _MyOperationPageState extends State<MyOperationPage> {
     return contents;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double blockSize = width / 100;
-    // FloatingActionButton javadocButton = new FloatingActionButton.extended(
-    //   heroTag: "btn1",
-    //   backgroundColor: midCyan,
-    //   icon: Icon(Icons.code),
-    //   elevation: 0,
-    //   focusElevation: 1.5,
-    //   label: Text(
-    //     'Javadocs',
-    //     style: TextStyle(
-    //       fontFamily: "Open Sans",
-    //       fontWeight: FontWeight.w300,
-    //       fontSize: blockSize * 1.3,
-    //     ),
-    //   ),
-    //   onPressed: () {
-    //     setState(() {
-    //       setJavadoc();
-    //     });
-    //   },
-    // );
-    AnimatedOpacity javadocButton = new AnimatedOpacity(
+  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, ) {
+    return AnimatedOpacity(
       child: RaisedButton(
         onPressed: () {
           setState(() {
-            setJavadoc();
+            method();
           });
         },
         color: midCyan,
@@ -182,7 +160,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                 color: lightCyan,
               ),
               Text(
-                '  Javadocs',
+                buttonText,
                 style: TextStyle(
                   fontFamily: "Open Sans",
                   fontSize: 20,
@@ -194,178 +172,37 @@ class _MyOperationPageState extends State<MyOperationPage> {
         ),
       ),
       duration: const Duration(milliseconds: 500),
-      opacity: _javadocOpacity,
+      opacity: opac,
     );
+  }
 
-    // FloatingActionButton singleLineButton = new FloatingActionButton.extended(
-    //   heroTag: "btn2",
-    //   backgroundColor: midCyan,
-    //   icon: Icon(Icons.subject),
-    //   elevation: 0,
-    //   focusElevation: 1.5,
-    //   label: Text(
-    //     '// Comments',
-    //     style: TextStyle(
-    //       fontFamily: "Open Sans",
-    //       fontWeight: FontWeight.w300,
-    //       fontSize: blockSize * 1.3,
-    //     ),
-    //   ),
-    //   onPressed: () {
-    //     setState(() {
-    //       setSingleLine();
-    //     });
-    //   },
-    // );
-
-    AnimatedOpacity singleLineButton = new AnimatedOpacity(
-      child: RaisedButton(
-        onPressed: () {
-          setState(() {
-            setSingleLine();
-          });
-        },
-        color: midCyan,
-        elevation: 0,
-        focusElevation: 1.5,
-        textColor: lightCyan,
-        padding: EdgeInsets.only(left: 30, right: 32, top: 17, bottom: 17),
-        clipBehavior: Clip.none,
-        child: Container(
-          child: Row(
-            children: [
-              Icon(
-                Icons.subject,
-                color: lightCyan,
-              ),
-              Text(
-                '  // Comments',
-                style: TextStyle(
-                  fontFamily: "Open Sans",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ],
-          ), 
-        ),
+  Text getText(double size, String text, Color color, TextAlign t) {
+    return Text(text,
+      textAlign: t,
+      style: TextStyle(
+        fontFamily: 'Open Sans',
+        fontWeight: FontWeight.w300,
+        fontSize: size,
+        color: color,
       ),
-      duration: const Duration(milliseconds: 500),
-      opacity: _singleCommentOpacity,
     );
+  }
 
-    // FloatingActionButton whitespaceButton = new FloatingActionButton.extended(
-    //   heroTag: "btn3",
-    //   backgroundColor: midCyan,
-    //   icon: Icon(Icons.space_bar),
-    //   elevation: 0,
-    //   focusElevation: 1.5,
-    //   label: Text(
-    //     'Whitespaces',
-    //     style: TextStyle(
-    //       fontFamily: "Open Sans",
-    //       fontWeight: FontWeight.w300,
-    //       fontSize: blockSize * 1.3,
-    //     ),
-    //   ),
-    //   onPressed: () {
-    //     setState(() {
-    //       setWhitespaces();
-    //     });
-    //   },
-    // );
-
-    AnimatedOpacity whitespaceButton = new AnimatedOpacity(
-      child: RaisedButton(
-        onPressed: () {
-          setState(() {
-            setWhitespaces();
-          });
-        },
-        color: midCyan,
-        elevation: 0,
-        focusElevation: 1.5,
-        textColor: lightCyan,
-        padding: EdgeInsets.only(left: 30, right: 32, top: 17, bottom: 17),
-        clipBehavior: Clip.none,
-        child: Container(
-          child: Row(
-            children: [
-              Icon(
-                Icons.space_bar,
-                color: lightCyan,
-              ),
-              Text(
-                '  Whitespaces',
-                style: TextStyle(
-                  fontFamily: "Open Sans",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ],
-          ), 
-        ),
-      ),
-      duration: const Duration(milliseconds: 500),
-      opacity: _whitespaceOpacity,
+  Icon getIcon(Color iconCol) {
+    return Icon(
+      Icons.check,
+      color: iconCol,
     );
+  }
 
-    // FloatingActionButton indentationButton = new FloatingActionButton.extended(
-    //   heroTag: "btn4",
-    //   backgroundColor: midCyan,
-    //   icon: Icon(Icons.format_indent_increase),
-    //   elevation: 0,
-    //   focusElevation: 1.5,
-    //   label: Text(
-    //     'Indentations',
-    //     style: TextStyle(
-    //       fontFamily: "Open Sans",
-    //       fontWeight: FontWeight.w300,
-    //       fontSize: blockSize * 1.3,
-    //     ),
-    //   ),
-    //   onPressed: () {
-    //     setState(() {
-    //       setIndentation();
-    //     });
-    //   },
-    // );
-    AnimatedOpacity indentationButton = new AnimatedOpacity(
-      child: RaisedButton(
-        onPressed: () {
-          setState(() {
-            setIndentation();
-          });
-        },
-        color: midCyan,
-        elevation: 0,
-        focusElevation: 1.5,
-        textColor: lightCyan,
-        padding: EdgeInsets.only(left: 30, right: 32, top: 17, bottom: 17),
-        clipBehavior: Clip.none,
-        child: Container(
-          child: Row(
-            children: [
-              Icon(
-                Icons.format_indent_increase,
-                color: lightCyan,
-              ),
-              Text(
-                '  Indentations',
-                style: TextStyle(
-                  fontFamily: "Open Sans",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ],
-          ), 
-        ),
-      ),
-      duration: const Duration(milliseconds: 500),
-      opacity: _indentationOpacity,
-    );
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double blockSize = width / 100;
+    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity);
+    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity);
+    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity); 
+    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity);
 
     return Scaffold(
       body: Center(
@@ -390,26 +227,14 @@ class _MyOperationPageState extends State<MyOperationPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Choose an operation',
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      color: midCyan,
-                      fontSize: blockSize * 5.5,
-                    ),
-                  ),
-                  Text(
+                  getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.left),
+                  getText(
+                    blockSize * 1.5,
                     'Choose the operations you want to perform on the .java files.\nThe software will ' +
                     'only apply the selected operations on the contents\nof the .java file and you can download' +
                     ' the fixed version in the next step:\n\n',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: darkCyan,
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      fontSize: blockSize * 1.5,
-                    ),
+                    darkCyan,
+                    TextAlign.left
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -419,21 +244,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           javadocButton,
-                          Text(
-                            '\nAdds Missing\nJavadocs',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: blockSize * 1.1,
-                              color: darkCyan,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          getText(blockSize * 1.1, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
                           Text(''),
-                          Icon(
-                            Icons.check,
-                            color: _javadocIcon,
-                          ),
+                          getIcon(_javadocIcon),
                         ],
                       ),
                       Text('\t\t'),
@@ -441,21 +254,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           singleLineButton,
-                          Text(
-                            '\nRemoves Single\nLine Comments',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: blockSize * 1.1,
-                              color: darkCyan,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          getText(blockSize * 1.1, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
                           Text(''),
-                          Icon(
-                            Icons.check,
-                            color: _singleCommentIcon,
-                          ),
+                          getIcon(_singleCommentIcon),
                         ],
                       ),
                       Text('\t\t'),
@@ -463,21 +264,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           whitespaceButton,
-                          Text(
-                            '\nFixes Incorrect\nWhitespaces',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: blockSize * 1.1,
-                              color: darkCyan,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          getText(blockSize * 1.1, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
                           Text(''),
-                          Icon(
-                            Icons.check,
-                            color: _whitespaceIcon,
-                          ),
+                          getIcon(_whitespaceIcon),
                         ],
                       ),
                       Text('\t\t'),
@@ -485,21 +274,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           indentationButton,
-                          Text(
-                            '\nFixes Incorrect\nIndentations',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: blockSize * 1.1,
-                              color: darkCyan,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          getText(blockSize * 1.1, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
                           Text(''),
-                          Icon(
-                            Icons.check,
-                            color: _indentationIcon,
-                          ),
+                          getIcon(_indentationIcon),
                         ],
                       ),
                     ],
@@ -526,14 +303,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                     clipBehavior: Clip.none,
                     child: Container(
-                      child: const Text(
-                        'Run',
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
+                      child: getText (blockSize * 1.4, 'Run', lightCyan, TextAlign.center),
                     ),
                   ),
                   Text(

@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'dart:ui';
+import 'package:ICE/main.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
@@ -117,6 +118,17 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
     finalString = path;
   }
 
+  Text getText(double size, String text, Color color) {
+    return Text(text,
+      style: TextStyle(
+        fontFamily: 'Open Sans',
+        fontWeight: FontWeight.w300,
+        fontSize: size,
+        color: color,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -145,24 +157,11 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Choose a file',
-                    style: TextStyle(
-                      fontFamily: "Open Sans",
-                      fontSize: blockSize * 6,
-                      color: midCyan,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  Text(
+                  getText(blockSize * 6, 'Choose a file', midCyan),
+                  getText(
+                    blockSize * 1.5,
                     'Upload a file (.java file) you would like the program to clear\nstyle check errors:\n\n',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: "Open Sans",
-                      fontSize: blockSize * 1.5,
-                      fontWeight: FontWeight.w300,
-                      color: darkCyan,
-                    ),
+                    darkCyan
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 20),
@@ -195,14 +194,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
                     elevation: 0,
                     padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                     focusElevation: 2.0,
-                    child: Text(
-                      'Upload File',
-                      style: TextStyle(
-                        fontFamily: "Open Sans",
-                        fontSize: blockSize * 1.4,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
+                    child: getText(blockSize * 1.4, 'Upload File', lightCyan),
                   ),
                 ],
               ),
