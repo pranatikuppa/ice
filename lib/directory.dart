@@ -26,13 +26,28 @@ String finalString;
 class MyDirectoryPage extends StatefulWidget {
   MyDirectoryPage({Key key, this.title}) : super(key:key);
   final String title;
-
   static String getFileContents() {
     return finalString;
   }
-
   @override
   _MyDirectoryPageState createState() => _MyDirectoryPageState();
+}
+
+Route _nextRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+    MyOperationPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
 
 class _MyDirectoryPageState extends State<MyDirectoryPage> {
@@ -101,13 +116,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
 
   void nextPage(BuildContext context) {
     finalString = _fileString;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => 
-        MyOperationPage(file: _fileString,),
-      ),
-    );
+    Navigator.of(context).push(_nextRoute());
   }
 
   void prevPage(BuildContext context) {

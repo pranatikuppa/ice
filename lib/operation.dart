@@ -39,6 +39,23 @@ class MyOperationPage extends StatefulWidget {
   _MyOperationPageState createState() => _MyOperationPageState();
 }
 
+Route _nextRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+    MyFileDownloadPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
 class _MyOperationPageState extends State<MyOperationPage> {
   bool _javadoc = false;
   bool _singleComment = false;
@@ -60,13 +77,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
 
   void nextPage(String result, BuildContext context) {
     finalFileContent = result;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => 
-        MyFileDownloadPage(contents: finalFileContent,),
-      ),
-    );
+    Navigator.of(context).push(_nextRoute());
   }
 
   void setJavadoc() {

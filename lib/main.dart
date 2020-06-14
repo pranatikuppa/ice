@@ -24,6 +24,23 @@ void main() {
   runApp(MyApp());
 }
 
+Route _nextRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+    MyDirectoryPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,28 +51,15 @@ class MyApp extends StatelessWidget {
         primarySwatch: darkCyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'ICEcap'),
+      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget{
 
   void nextPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => 
-        MyDirectoryPage(),
-      ),
-    );
+    Navigator.of(context).push(_nextRoute());
   }
 
   Text getText(double size, String text, Color color) {
@@ -95,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: blockSize * 30,
                     height: blockSize * 30,
                   ),
-                  getText(blockSize * 8, 'Welcome to ICEcap', midCyan),
+                  getText(blockSize * 8, 'Welcome to ICEcΔp', midCyan),
                   getText(blockSize * 2, '(Interactive Convention Editor)', midCyan),
                   Text(''),
                   getText(

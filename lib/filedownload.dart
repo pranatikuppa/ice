@@ -34,6 +34,23 @@ class MyFileDownloadPage extends StatefulWidget {
   _MyFileDownloadPageState createState() => _MyFileDownloadPageState();
 }
 
+Route _nextRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+    MyDirectoryPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
 class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   String cleanFilename(String name) {
@@ -68,13 +85,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => 
-        MyDirectoryPage(),
-      ),
-    );
+    Navigator.of(context).push(_nextRoute());
   }
 
   Text getText(double size, String text, Color color) {
