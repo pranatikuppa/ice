@@ -120,6 +120,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
 
   Text getText(double size, String text, Color color) {
     return Text(text,
+      textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Open Sans',
         fontWeight: FontWeight.w300,

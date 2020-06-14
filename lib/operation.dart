@@ -227,14 +227,14 @@ class _MyOperationPageState extends State<MyOperationPage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.left),
+                  getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.center),
                   getText(
                     blockSize * 1.5,
                     'Choose the operations you want to perform on the .java files.\nThe software will ' +
                     'only apply the selected operations on the contents\nof the .java file and you can download' +
                     ' the fixed version in the next step:\n\n',
                     darkCyan,
-                    TextAlign.left
+                    TextAlign.center
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

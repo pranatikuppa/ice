@@ -79,6 +79,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   Text getText(double size, String text, Color color) {
     return Text(text,
+      textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Open Sans',
         fontWeight: FontWeight.w300,
