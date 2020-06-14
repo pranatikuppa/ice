@@ -7,7 +7,6 @@ import 'package:ICE/singlelines.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
 import 'package:ICE/whitespace.dart';
-import 'package:flutter/services.dart';
 
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
@@ -25,35 +24,25 @@ Map<int, Color> cyanColorCodes = {
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
-String finalFileContent;
 
 class MyOperationPage extends StatefulWidget {
-  const MyOperationPage({Key key, this.file}) : super(key: key);
-  final String file;
+  MyOperationPage({Key key, this.controller, this.nextPage, this.disabled}) : super(key: key);
+  bool disabled;
+  final ScrollController controller;
+  final MyFileDownloadPage nextPage; 
+  String fileContents;
+  String fixedFileContent;
 
-  static String getFileContents() {
-    return finalFileContent;
+  void setFileContents(String contents) {
+    fileContents = contents;
+  }
+
+  void resetAll() {
+    
   }
 
   @override
   _MyOperationPageState createState() => _MyOperationPageState();
-}
-
-Route _nextRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-    MyFileDownloadPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }
 
 class _MyOperationPageState extends State<MyOperationPage> {
@@ -71,13 +60,13 @@ class _MyOperationPageState extends State<MyOperationPage> {
   double _indentationOpacity = 0.5;
   Color _errorColor = lightCyan;
 
-  void prevPage(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void nextPage(String result, BuildContext context) {
-    finalFileContent = result;
-    Navigator.of(context).push(_nextRoute());
+  void nextPage(String result) {
+    setState(() {
+      widget.fixedFileContent = result;
+      widget.nextPage.setFixedFileContents(widget.fixedFileContent);
+      widget.controller.animateTo(2350, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      widget.nextPage.disabled = false;
+    });
   }
 
   void setJavadoc() {
@@ -154,7 +143,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
       child: RaisedButton(
         onPressed: () {
           setState(() {
-            method();
+            if (!widget.disabled) {
+              method();
+            }
           });
         },
         color: midCyan,
@@ -215,133 +206,107 @@ class _MyOperationPageState extends State<MyOperationPage> {
     AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity); 
     AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity);
 
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: lightCyan,
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      color: lightCyan,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton (
-                    onPressed: () {prevPage(context);}, 
-                    icon: Icon(Icons.arrow_back_ios),
-                    color: midCyan,
-                    iconSize: blockSize * 4,
-                  ),
-                ],
+              getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.center),
+              getText(
+                blockSize * 1.5,
+                'Choose the operations you want to perform on the .java files.\nThe software will ' +
+                'only apply the selected operations on the contents\nof the .java file and you can download' +
+                ' the fixed version in the next step:\n\n',
+                darkCyan,
+                TextAlign.center
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.center),
-                  getText(
-                    blockSize * 1.5,
-                    'Choose the operations you want to perform on the .java files.\nThe software will ' +
-                    'only apply the selected operations on the contents\nof the .java file and you can download' +
-                    ' the fixed version in the next step:\n\n',
-                    darkCyan,
-                    TextAlign.center
-                  ),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          javadocButton,
-                          getText(blockSize * 1.1, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
-                          Text(''),
-                          getIcon(_javadocIcon),
-                        ],
-                      ),
-                      Text('\t\t'),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          singleLineButton,
-                          getText(blockSize * 1.1, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
-                          Text(''),
-                          getIcon(_singleCommentIcon),
-                        ],
-                      ),
-                      Text('\t\t'),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          whitespaceButton,
-                          getText(blockSize * 1.1, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
-                          Text(''),
-                          getIcon(_whitespaceIcon),
-                        ],
-                      ),
-                      Text('\t\t'),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          indentationButton,
-                          getText(blockSize * 1.1, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
-                          Text(''),
-                          getIcon(_indentationIcon),
-                        ],
-                      ),
+                      javadocButton,
+                      getText(blockSize * 1.1, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
+                      Text(''),
+                      getIcon(_javadocIcon),
                     ],
                   ),
-                  Text('\n\n'),
-                  RaisedButton(
-                    onPressed: () {
-                      if (!_javadoc && !_singleComment && !_indentation && !_whitespace) {
-                        setState(() {
-                          _errorColor = Colors.red;
-                        });
-                      } else {
-                        _errorColor = lightCyan;
-                        String result = "";
-                        result = runSoftware(MyDirectoryPage.getFileContents(), _javadoc, _singleComment, _whitespace, _indentation);
-                        nextPage(result, context);
-                      }
-                    },
-                    color: midCyan,
-                    elevation: 0,
-                    focusElevation: 1.5,
-                    disabledColor: darkCyan,
-                    textColor: lightCyan,
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    clipBehavior: Clip.none,
-                    child: Container(
-                      child: getText (blockSize * 1.4, 'Run', lightCyan, TextAlign.center),
-                    ),
+                  Text('\t\t'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      singleLineButton,
+                      getText(blockSize * 1.1, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
+                      Text(''),
+                      getIcon(_singleCommentIcon),
+                    ],
                   ),
-                  Text(
-                    '\n\n* Please select at least one operation',
-                    style: TextStyle(
-                      fontFamily: 'Open Sans',
-                      fontWeight: FontWeight.w300,
-                      color: _errorColor,
-                    ),
+                  Text('\t\t'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      whitespaceButton,
+                      getText(blockSize * 1.1, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
+                      Text(''),
+                      getIcon(_whitespaceIcon),
+                    ],
+                  ),
+                  Text('\t\t'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      indentationButton,
+                      getText(blockSize * 1.1, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
+                      Text(''),
+                      getIcon(_indentationIcon),
+                    ],
                   ),
                 ],
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton (
-                    onPressed: () {},
-                    icon: Icon(Icons.arrow_forward_ios),
-                    color: lightCyan,
-                    iconSize: blockSize * 4,
-                  ),
-                ],
+              Text('\n\n'),
+              RaisedButton(
+                onPressed: () {
+                  if (!widget.disabled) {
+                    if (!_javadoc && !_singleComment && !_indentation && !_whitespace) {
+                      setState(() {
+                        _errorColor = Colors.red;
+                      });
+                    } else {
+                      _errorColor = lightCyan;
+                      String result = "";
+                      result = runSoftware(widget.fileContents, _javadoc, _singleComment, _whitespace, _indentation);
+                      nextPage(result);
+                    }
+                  }
+                },
+                color: midCyan,
+                elevation: 0,
+                focusElevation: 1.5,
+                disabledColor: darkCyan,
+                textColor: lightCyan,
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                clipBehavior: Clip.none,
+                child: Container(
+                  child: getText (blockSize * 1.4, 'Run', lightCyan, TextAlign.center),
+                ),
+              ),
+              Text(
+                '\n\n* Please select at least one operation',
+                style: TextStyle(
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w300,
+                  color: _errorColor,
+                ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

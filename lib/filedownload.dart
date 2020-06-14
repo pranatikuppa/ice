@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
 import 'package:ICE/directory.dart';
 
+import 'main.dart';
+
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
     100: Color.fromRGBO(21, 72, 84, 0.2),
@@ -27,28 +29,32 @@ TextEditingController textController = new TextEditingController();
 String filename = "";
 
 class MyFileDownloadPage extends StatefulWidget {
-  MyFileDownloadPage({Key key, this.contents}) : super(key:key);
+  MyFileDownloadPage({Key key, this.controller, this.contents, this.disabled}) : super(key:key);
   final String contents;
+  final ScrollController controller;
+  MyDirectoryPage pageRef1;
+  MyHomePage pageRef2;
+  bool disabled;
+  String finalFixedFileContents;
+
+  void setPageRef1(StatefulWidget page1) {
+    pageRef1 = page1;
+  }
+  
+  void setPageRef2(StatefulWidget page2) {
+    pageRef2 = page2;
+  }
+
+  void setFixedFileContents(String fixedContent) {
+    finalFixedFileContents = fixedContent;
+  }
+
+  void resetAll() {
+    
+  }
 
   @override
   _MyFileDownloadPageState createState() => _MyFileDownloadPageState();
-}
-
-Route _nextRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-    MyDirectoryPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }
 
 class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
@@ -68,24 +74,25 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   }
 
   void downloadFile() {
-    filename = cleanFilename(textController.text);
-    final text = MyOperationPage.getFileContents();
-    final bytes = utf8.encode(text);
-    final blob = html.Blob([bytes]);
-    js.context.callMethod("webSaveAs", [blob, filename]);
+    if (!widget.disabled) {
+      filename = cleanFilename(textController.text);
+      final text = widget.finalFixedFileContents;
+      final bytes = utf8.encode(text);
+      final blob = html.Blob([bytes]);
+      js.context.callMethod("webSaveAs", [blob, filename]);
+    }
   }
 
-  void mainInfoPage(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.pop(context);
+  void mainInfoPage() {
+    widget.pageRef1.nextPage.disabled = true;
+    widget.controller.animateTo(10, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    widget.disabled = true;
   }
 
-  void chooseFilePage(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.of(context).push(_nextRoute());
+  void chooseFilePage() {
+    widget.pageRef1.nextPage.disabled = true;
+    widget.controller.animateTo(800, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    widget.disabled = true;
   }
 
   Text getText(double size, String text, Color color) {
@@ -102,7 +109,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   RaisedButton getButton(var method, String buttonText, double size) {
     return RaisedButton(
-      onPressed: () {method(context);},
+      onPressed: () {
+        if (!widget.disabled) {
+          method();
+        }
+      },
       color: midCyan,
       elevation: 0,
       focusElevation: 1.5,
@@ -127,84 +138,84 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: lightCyan,
-          alignment: Alignment.center,
-          child: Column(
+    return Container(
+      color: Colors.white,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget> [
+          getText(blockSize * 5.5, 'Download your file', midCyan),
+          getText(
+            blockSize * 1.5,
+            'Type in the name you want for the file (ex. filename.java) and then click "Download File."\n' +
+            'If you do not enter a name for the file we will give it a generic name:\n\n',
+            darkCyan,
+          ),
+          Container(
+            width: 450,
+            height: 60,
+            child: TextField(
+              onChanged: (String t) {
+                filename = t;
+              },
+              controller: textController,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: darkCyan,
+                fontFamily: "Open Sans",
+                fontWeight: FontWeight.w300,
+              ),
+              decoration: InputDecoration(
+                focusedBorder: new OutlineInputBorder(
+                  borderSide: new BorderSide(
+                    color: midCyan,
+                    width: 1.0,
+                  ),
+                ),
+                border: new OutlineInputBorder(
+                  borderSide: new BorderSide(
+                    color: midCyan,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Text("\n\n"),
+          RaisedButton(
+            onPressed: () async {
+              if (!widget.disabled) {
+                downloadFile();
+              }
+            },
+            color: midCyan,
+            elevation: 0,
+            focusElevation: 1.5,
+            disabledColor: darkCyan,
+            textColor: lightCyan,
+            padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+            clipBehavior: Clip.none,
+            child: Container(
+              child: Text(
+                'Download File',
+                style: TextStyle(
+                  fontFamily: "Open Sans",
+                  fontSize: blockSize * 1.4,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ),
+          Text("\n\n"),
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
-              getText(blockSize * 5.5, 'Download your file', midCyan),
-              getText(
-                blockSize * 1.5,
-                'Type in the name you want for the file (ex. filename.java) and then click "Download File."\n' +
-                'If you do not enter a name for the file we will give it a generic name:\n\n',
-                darkCyan,
-              ),
-              Container(
-                width: 450,
-                height: 60,
-                child: TextField(
-                  onChanged: (String t) {
-                    filename = t;
-                  },
-                  controller: textController,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: darkCyan,
-                    fontFamily: "Open Sans",
-                    fontWeight: FontWeight.w300,
-                  ),
-                  decoration: InputDecoration(
-                    focusedBorder: new OutlineInputBorder(
-                      borderSide: new BorderSide(
-                        color: midCyan,
-                        width: 1.0,
-                      ),
-                    ),
-                    border: new OutlineInputBorder(
-                      borderSide: new BorderSide(
-                        color: midCyan,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Text("\n\n"),
-              RaisedButton(
-                onPressed: () async {downloadFile();},
-                color: midCyan,
-                elevation: 0,
-                focusElevation: 1.5,
-                disabledColor: darkCyan,
-                textColor: lightCyan,
-                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                clipBehavior: Clip.none,
-                child: Container(
-                  child: Text(
-                    'Download File',
-                    style: TextStyle(
-                      fontFamily: "Open Sans",
-                      fontSize: blockSize * 1.4,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-              ),
-              Text("\n\n"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  getButton(chooseFilePage, 'Choose New File', blockSize * 1.4),
-                  Text("\t\t"),
-                  getButton(mainInfoPage, 'Go To Main Page', blockSize * 1.4),
-                ],
-              ),
+            children: [
+              getButton(chooseFilePage, 'Choose New File', blockSize * 1.4),
+              Text("\t\t"),
+              getButton(mainInfoPage, 'Go To Main Page', blockSize * 1.4),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

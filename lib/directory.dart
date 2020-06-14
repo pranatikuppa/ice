@@ -1,9 +1,7 @@
 import 'dart:html';
 import 'dart:ui';
-import 'package:ICE/main.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
 
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
@@ -21,42 +19,31 @@ Map<int, Color> cyanColorCodes = {
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
-String finalString;
+bool isValidFile;
 
 class MyDirectoryPage extends StatefulWidget {
-  MyDirectoryPage({Key key, this.title}) : super(key:key);
-  final String title;
-  static String getFileContents() {
-    return finalString;
+  MyDirectoryPage({Key key, this.controller, this.nextPage}) : super(key:key);
+
+  final ScrollController controller;
+  final MyOperationPage nextPage;
+
+  bool isValidFileChosen() {
+    return isValidFile;
   }
+
+  void resetAll() {
+    
+  }
+
   @override
   _MyDirectoryPageState createState() => _MyDirectoryPageState();
 }
 
-Route _nextRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-    MyOperationPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
-
 class _MyDirectoryPageState extends State<MyDirectoryPage> {
-  final directoryTextController = new TextEditingController();
-  FilePickerCross filePicker = FilePickerCross();
   String _fileString = "";
   bool _validFileChosen = false;
   Text _displayText = Text('');
-  Color _iconColor = lightCyan;
+  Color _iconColor = Colors.white;
   String _fileName = "";
   Text _errorText = Text(
       '* Please select a file (.java file)',
@@ -114,17 +101,16 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
     }
   }
 
-  void nextPage(BuildContext context) {
-    finalString = _fileString;
-    Navigator.of(context).push(_nextRoute());
+  void nextPage() {
+    setState(() {
+      widget.controller.animateTo(1600, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      widget.nextPage.disabled = false;
+      widget.nextPage.setFileContents(_fileString);
+    });
   }
 
-  void prevPage(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void saveFileContents(String path) {
-    finalString = path;
+  void saveFileContents(String contents) {
+    _fileString = contents;
   }
 
   Text getText(double size, String text, Color color) {
@@ -138,101 +124,81 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
       ),
     );
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
-
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: lightCyan,
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      color: Colors.white,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton (
-                    onPressed: () {prevPage(context);}, 
-                    icon: Icon(Icons.arrow_back_ios),
-                    color: midCyan,
-                    iconSize: blockSize * 4,
-                  ),
-                ],
+              getText(blockSize * 6, 'Choose a file', midCyan),
+              getText(
+                blockSize * 1.5,
+                'Upload a file (.java file) you would like the program to clear\nstyle check errors:\n\n',
+                darkCyan
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  getText(blockSize * 6, 'Choose a file', midCyan),
-                  getText(
-                    blockSize * 1.5,
-                    'Upload a file (.java file) you would like the program to clear\nstyle check errors:\n\n',
-                    darkCyan
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 20),
-                    width: 450,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: midCyan,
-                        width: 1.0
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check,
-                          color: _iconColor, 
-                        ),
-                        Text("  "),
-                        _displayText,
-                      ],
-                    ),
-                  ),
-                  Text('\n\n\n\n'),
-                  RaisedButton(
-                    onPressed: () {uploadFiles();},
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                width: 450,
+                height: 60,
+                decoration: BoxDecoration(
+                  border: Border.all(
                     color: midCyan,
-                    textColor: lightCyan,
-                    elevation: 0,
-                    padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    focusElevation: 2.0,
-                    child: getText(blockSize * 1.4, 'Upload File', lightCyan),
+                    width: 1.0
                   ),
-                ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check,
+                      color: _iconColor, 
+                    ),
+                    Text("  "),
+                    _displayText,
+                  ],
+                ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton (
-                    onPressed: () {
-                      validateFile();
-                      setState(() {
-                        if (!_validFileChosen) {
-                          _displayText = _errorText;
-                        } else {
-                          saveFileContents(_fileString);
-                          nextPage(context);
-                        }
-                      });
-                    }, 
-                    icon: Icon(Icons.arrow_forward_ios),
-                    color: midCyan,
-                    iconSize: blockSize * 4,
-                  ),
-                ],
+              Text('\n\n'),
+              RaisedButton(
+                onPressed: () {uploadFiles();},
+                color: midCyan,
+                textColor: lightCyan,
+                elevation: 0,
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                focusElevation: 2.0,
+                child: getText(blockSize * 1.4, 'Upload File', lightCyan),
+              ),
+              Text('\n\n'),
+              RaisedButton(
+                onPressed: () {
+                  validateFile();
+                  setState(() {
+                    if (!_validFileChosen) {
+                      _displayText = _errorText;
+                    } else {
+                      saveFileContents(_fileString);
+                      nextPage();
+                    }
+                  });
+                },
+                color: midCyan,
+                textColor: lightCyan,
+                elevation: 0,
+                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                focusElevation: 2.0,
+                child: getText(blockSize * 1.4, 'Continue', lightCyan),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

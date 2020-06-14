@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:ICE/filedownload.dart';
+import 'package:ICE/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/directory.dart';
 
@@ -24,23 +26,6 @@ void main() {
   runApp(MyApp());
 }
 
-Route _nextRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-    MyDirectoryPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,14 +41,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends StatefulWidget {
+  final String title;
 
-  void nextPage(BuildContext context) {
-    Navigator.of(context).push(_nextRoute());
-  }
+  MyHomePage({Key key, this.title}) : super(key: key);
 
-  Text getText(double size, String text, Color color) {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+
+  Text getText(double size, String text, Color color, TextAlign t) {
     return Text(text,
+      textAlign: t,
       style: TextStyle(
         fontFamily: 'Open Sans',
         fontWeight: FontWeight.w300,
@@ -76,65 +67,125 @@ class MyHomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double blockSize = width / 100;
+    double blockSize = width/100;
+    ScrollController scrollController = ScrollController();
+    MyFileDownloadPage fileDownloadPage = MyFileDownloadPage(controller: scrollController, disabled: true);
+    MyOperationPage operationPage = MyOperationPage(controller: scrollController, nextPage: fileDownloadPage, disabled: true);
+    MyDirectoryPage directoryPage = MyDirectoryPage(controller: scrollController, nextPage: operationPage);
+    fileDownloadPage.setPageRef1(directoryPage);
+    fileDownloadPage.setPageRef2(widget);
+
     return Scaffold(
-      body: Center(
-        widthFactor: 1350,
-        heightFactor: 650,
+      body: FractionallySizedBox(
         child: Container(
-          padding: EdgeInsets.only(left: 15, right: 10),
           color: lightCyan,
-          alignment: Alignment.bottomRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Image(
-                    alignment: Alignment.bottomLeft,
-                    repeat: ImageRepeat.noRepeat,
-                    image: AssetImage('assets/mountains.png'),
-                    width: blockSize * 30,
-                    height: blockSize * 30,
+          alignment: Alignment.center,
+          child: CustomScrollView(
+            physics: null,
+            controller: scrollController,
+            slivers: [
+              SliverAppBar(
+                titleSpacing: 0.6,
+                collapsedHeight: 57,
+                centerTitle: true,
+                actions: [
+                  RaisedButton(
+                    color: lightCyan,
+                    hoverElevation: 0,
+                    elevation: 0,
+                    focusElevation: 0,
+                    onPressed: () {},
+                    child: getText(blockSize * 1.2, 'Contact Us', midCyan, TextAlign.center),
                   ),
-                  getText(blockSize * 8, 'Welcome to ICEcΔp', midCyan),
-                  getText(blockSize * 2, '(Interactive Convention Editor)', midCyan),
-                  Text(''),
-                  getText(
-                    blockSize * 1.3,
-                    'We all have faced issues with the 200+ style check' + 
-                    ' errors that appear right when we are ready to submit ' + 
-                    'our CS 61B projects.\nIn three easy steps you can get rid of many style check errors from your project.',
-                    darkCyan
-                  ),
-                  Text("\n"),
-                  Text(
-                    "Created by two fellow 61Bers, Pranati & Khushi",
-                    style: TextStyle(
-                      fontFamily: "Open Sans",
-                      fontSize: blockSize * 0.9,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic,
-                      color: darkCyan,
-                    ),
-                  ),
+                  Text('\t\t\t'),
                 ],
+                pinned: true,
+                backgroundColor: lightCyan,
+                elevation: 2,
+                title: getText(blockSize * 1.2, 'ICEcap v1.0', midCyan, TextAlign.center),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton (
-                    onPressed: () {nextPage(context);}, 
-                    icon: Icon(
-                      Icons.arrow_forward_ios,
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image(
+                          alignment: Alignment.center,
+                          repeat: ImageRepeat.noRepeat,
+                          image: AssetImage('assets/mountains.png'),
+                          width: blockSize * 35,
+                          height: blockSize * 35,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            getText(blockSize * 12, 'ICEcΔp', midCyan, TextAlign.left),
+                            getText(blockSize * 2.4, '(Interactive Convention Editor)\n\n', midCyan, TextAlign.left),
+                          ],
+                        ),
+                      ],
                     ),
-                    color: midCyan,
-                    iconSize: blockSize * 4,
-                  ),
-                ],
+                    Column(
+                      children: [
+                        getText(
+                          blockSize * 1.6, 
+                          'We all have faced issues with the 200+ style check' + 
+                          ' errors that appear right when we are ready to submit ' + 
+                          'our\nCS 61B projects. In three easy steps below you can get rid of many style check errors from your project.\n\n',
+                          darkCyan,
+                          TextAlign.center
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                          },
+                          color: midCyan,
+                          textColor: lightCyan,
+                          elevation: 0,
+                          padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                          focusElevation: 2.0,
+                          child: getText(blockSize * 1.4, 'Start', lightCyan, TextAlign.center),
+                        ),
+                        Text("\n\n\n"),
+                      ],
+                    ),
+                    Container(
+                      width: 20,
+                      height: 800,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 70, top: 70),
+                      child: directoryPage,
+                    ),
+                    Container(
+                      width: 20,
+                      height: 800,
+                      color: lightCyan,
+                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 50, top: 50),
+                      child: operationPage,
+                    ),
+                    Container(
+                      width: 20,
+                      height: 800,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 50, top: 50),
+                      child: fileDownloadPage,
+                    ),
+                    Text(
+                      "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "Open Sans",
+                        fontSize: blockSize * 1.3,
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.italic,
+                        color: darkCyan,
+                      ),
+                    ),
+                  ]
+                ),
               ),
             ],
           ),
