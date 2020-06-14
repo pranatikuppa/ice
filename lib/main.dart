@@ -28,13 +28,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ICE',
+      title: 'ICEcap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: darkCyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'ICE'),
+      home: MyHomePage(title: 'ICEcap'),
     );
   }
 }
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: blockSize * 30,
                     height: blockSize * 30,
                   ),
-                  getText(blockSize * 8, 'Welcome to ICE', midCyan),
+                  getText(blockSize * 8, 'Welcome to ICEcap', midCyan),
                   getText(blockSize * 2, '(Interactive Convention Editor)', midCyan),
                   Text(''),
                   getText(
