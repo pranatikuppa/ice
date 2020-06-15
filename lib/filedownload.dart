@@ -29,13 +29,15 @@ TextEditingController textController = new TextEditingController();
 String filename = "";
 
 class MyFileDownloadPage extends StatefulWidget {
-  MyFileDownloadPage({Key key, this.controller, this.contents, this.disabled}) : super(key:key);
+  MyFileDownloadPage({Key key, this.homepage, this.controller, this.contents, this.disabled, this.listener}) : super(key:key);
   final String contents;
   final ScrollController controller;
   MyDirectoryPage pageRef1;
   MyHomePage pageRef2;
   bool disabled;
   String finalFixedFileContents;
+  var listener;
+  final MyHomePage homepage;
 
   void setPageRef1(StatefulWidget page1) {
     pageRef1 = page1;
@@ -50,7 +52,11 @@ class MyFileDownloadPage extends StatefulWidget {
   }
 
   void resetAll() {
-    
+
+  }
+
+  void setListener(void Function() list) {
+    listener = list;
   }
 
   @override
@@ -84,15 +90,21 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   }
 
   void mainInfoPage() {
-    widget.pageRef1.nextPage.disabled = true;
-    widget.controller.animateTo(10, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    widget.disabled = true;
+    widget.controller.animateTo(5, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    widget.controller.jumpTo(5);
+    setState(() {
+      widget.pageRef1.nextPage.disabled = true;
+      widget.disabled = true;
+    });
   }
 
   void chooseFilePage() {
-    widget.pageRef1.nextPage.disabled = true;
     widget.controller.animateTo(800, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    widget.disabled = true;
+    widget.controller.jumpTo(800);
+    setState(() {
+      widget.pageRef1.nextPage.disabled = true;
+      widget.disabled = true;
+    });
   }
 
   Text getText(double size, String text, Color color) {
@@ -138,6 +150,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
+
     return Container(
       color: Colors.white,
       alignment: Alignment.center,

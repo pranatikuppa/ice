@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:ICE/directory.dart';
 import 'package:ICE/filedownload.dart';
 import 'package:ICE/indentations.dart';
+import 'package:ICE/main.dart';
 import 'package:ICE/singlelines.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
@@ -26,19 +27,25 @@ MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
 
 class MyOperationPage extends StatefulWidget {
-  MyOperationPage({Key key, this.controller, this.nextPage, this.disabled}) : super(key: key);
+  MyOperationPage({Key key, this.homepage, this.controller, this.nextPage, this.disabled, this.listener}) : super(key: key);
   bool disabled;
   final ScrollController controller;
   final MyFileDownloadPage nextPage; 
   String fileContents;
   String fixedFileContent;
+  var listener;
+  final MyHomePage homepage;
 
   void setFileContents(String contents) {
     fileContents = contents;
   }
 
   void resetAll() {
-    
+
+  }
+
+  void setListener(void Function() list) {
+    listener = list;
   }
 
   @override
@@ -65,7 +72,6 @@ class _MyOperationPageState extends State<MyOperationPage> {
       widget.fixedFileContent = result;
       widget.nextPage.setFixedFileContents(widget.fixedFileContent);
       widget.controller.animateTo(2350, duration: Duration(milliseconds: 500), curve: Curves.ease);
-      widget.nextPage.disabled = false;
     });
   }
 
@@ -278,9 +284,12 @@ class _MyOperationPageState extends State<MyOperationPage> {
                         _errorColor = Colors.red;
                       });
                     } else {
-                      _errorColor = lightCyan;
                       String result = "";
-                      result = runSoftware(widget.fileContents, _javadoc, _singleComment, _whitespace, _indentation);
+                      setState(() {
+                        _errorColor = lightCyan;
+                        result = runSoftware(widget.fileContents, _javadoc, _singleComment, _whitespace, _indentation);
+                        widget.nextPage.disabled = false;
+                      });
                       nextPage(result);
                     }
                   }

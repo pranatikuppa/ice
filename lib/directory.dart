@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'dart:ui';
+import 'package:ICE/main.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
 
@@ -22,17 +23,23 @@ MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
 bool isValidFile;
 
 class MyDirectoryPage extends StatefulWidget {
-  MyDirectoryPage({Key key, this.controller, this.nextPage}) : super(key:key);
+  MyDirectoryPage({Key key, this.homepage, this.controller, this.nextPage, this.listener}) : super(key:key);
 
   final ScrollController controller;
   final MyOperationPage nextPage;
+  final MyHomePage homepage;
+  var listener;
 
   bool isValidFileChosen() {
     return isValidFile;
   }
 
   void resetAll() {
-    
+
+  }
+
+  void setListener(void Function() list) {
+    listener = list;
   }
 
   @override
@@ -104,7 +111,6 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
   void nextPage() {
     setState(() {
       widget.controller.animateTo(1600, duration: Duration(milliseconds: 500), curve: Curves.ease);
-      widget.nextPage.disabled = false;
       widget.nextPage.setFileContents(_fileString);
     });
   }
@@ -168,7 +174,9 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
               ),
               Text('\n\n'),
               RaisedButton(
-                onPressed: () {uploadFiles();},
+                onPressed: () {
+                  uploadFiles();
+                },
                 color: midCyan,
                 textColor: lightCyan,
                 elevation: 0,
@@ -180,14 +188,17 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
               RaisedButton(
                 onPressed: () {
                   validateFile();
-                  setState(() {
-                    if (!_validFileChosen) {
+                  if (!_validFileChosen) {
+                    setState(() {
                       _displayText = _errorText;
-                    } else {
+                    });
+                  } else {
+                    setState(() {
                       saveFileContents(_fileString);
-                      nextPage();
-                    }
-                  });
+                      widget.nextPage.disabled = false;
+                    });
+                    nextPage();
+                  }
                 },
                 color: midCyan,
                 textColor: lightCyan,

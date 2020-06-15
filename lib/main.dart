@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:ui';
-
+import 'dart:html';
 import 'package:ICE/filedownload.dart';
 import 'package:ICE/operation.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/directory.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
@@ -43,6 +45,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final String title;
+  ScrollPhysics scrollPhysics;
 
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -69,11 +72,29 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     double width = MediaQuery.of(context).size.width;
     double blockSize = width/100;
     ScrollController scrollController = ScrollController();
-    MyFileDownloadPage fileDownloadPage = MyFileDownloadPage(controller: scrollController, disabled: true);
-    MyOperationPage operationPage = MyOperationPage(controller: scrollController, nextPage: fileDownloadPage, disabled: true);
-    MyDirectoryPage directoryPage = MyDirectoryPage(controller: scrollController, nextPage: operationPage);
+    MyFileDownloadPage fileDownloadPage = MyFileDownloadPage(homepage: widget, controller: scrollController, disabled: true);
+    MyOperationPage operationPage = MyOperationPage(homepage: widget, controller: scrollController, nextPage: fileDownloadPage, disabled: true);
+    MyDirectoryPage directoryPage = MyDirectoryPage(homepage: widget, controller: scrollController, nextPage: operationPage);
     fileDownloadPage.setPageRef1(directoryPage);
     fileDownloadPage.setPageRef2(widget);
+    scrollListener() {
+      if (directoryPage.nextPage.disabled) {
+        if (scrollController.offset > 800) {
+          scrollController.jumpTo(799);
+        }
+      }
+      if (operationPage.nextPage.disabled) {
+          if (scrollController.offset > 1600) {
+            scrollController.jumpTo(1599);
+          }
+        }
+    }
+    scrollController.addListener(scrollListener);
+    scrollController.addListener(scrollListener);
+    directoryPage.setListener(scrollListener);
+    operationPage.setListener(scrollListener);
+    fileDownloadPage.setListener(scrollListener);
+
 
     return Scaffold(
       body: FractionallySizedBox(
@@ -81,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           color: lightCyan,
           alignment: Alignment.center,
           child: CustomScrollView(
-            physics: null,
+            physics: widget.scrollPhysics,
             controller: scrollController,
             slivers: [
               SliverAppBar(
@@ -94,7 +115,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                     hoverElevation: 0,
                     elevation: 0,
                     focusElevation: 0,
-                    onPressed: () {},
+                    onPressed: () async {
+                      const url = "https://flutter.io";
+                      if (await canLaunch(url)) {
+                        launch(url);
+                      } 
+                    },
                     child: getText(blockSize * 1.2, 'Contact Us', midCyan, TextAlign.center),
                   ),
                   Text('\t\t\t'),
@@ -140,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         ),
                         RaisedButton(
                           onPressed: () {
-                            scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                            scrollController.animateTo(800, duration: Duration(milliseconds: 500), curve: Curves.ease);
                           },
                           color: midCyan,
                           textColor: lightCyan,
