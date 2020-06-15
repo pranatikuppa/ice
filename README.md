@@ -5,14 +5,14 @@
  
  ## preliminary interface:
  
- Homepage: 
+ **Homepage**: 
  ![](assets/homepage.png)
  
- Uploading a file: 
+ **Uploading a file**: 
  ![](assets/choose_file.gif)
  
- Choose which operation to apply: 
+ **Choose which operation to apply**: 
  ![](assets/actions.gif)
  
- Downloading a file: 
+ **Downloading a file**: 
  ![](assets/download.gif)
