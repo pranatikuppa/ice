@@ -9,10 +9,10 @@
  ![](assets/homepage.png)
  
  Uploading a file: 
- ![](assets/upload_norm.png)
- 
- Error while attempting upload a non .java file:
- ![](assets/upload_err.png)
+ ![](assets/choose_file.gif)
  
  Choose which operation to apply: 
- ![](assets/options.png)
+ ![](assets/actions.gif)
+ 
+ Downloading a file: 
+ ![](assets/download.gif)
