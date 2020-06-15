@@ -6,7 +6,7 @@
  ## preliminary interface:
  
  Homepage: 
- ![](assets/choose_file.gif)
+ ![](assets/homepage.png)
  
  Uploading a file: 
  ![](assets/choose_file.gif)
