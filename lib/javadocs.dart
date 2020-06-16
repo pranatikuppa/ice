@@ -26,7 +26,10 @@ class JavadocComments {
     "(static )?" +
     "(void |[\\w\\W]+ )" +
     "([a-zA-Z0-9]+)" +
-    "\\((([\\w\\W]+ [a-zA-Z0-9]+|([\\w\\W]+ [a-zA-Z0-9]+, )+[\\w\\W]+ [a-zA-Z0-9]+))?\\) \\{"
+    "\\(" + 
+    "(([\\w\\W]+ [a-zA-Z0-9]+)|" + 
+    "(([\\w\\W]+ [a-zA-Z0-9]+, )+[\\w\\W]+ [a-zA-Z0-9]+))?" + 
+    "\\) ?\\{"
   );
 
   /* The regex pattern that matches a class header. */
@@ -35,7 +38,7 @@ class JavadocComments {
     "(static )?" + 
     "(class )" +
     "(extends |implements )?" +
-    "([a-zA-Z0-9]+) \\{"
+    "([a-zA-Z0-9]+) ?\\{"
   );
 
   /* The JavadocComments constructor */
@@ -71,11 +74,16 @@ class JavadocComments {
       if (lineNum < numLines) {
         newline = "\n";
       }
-      if (line.trimRight().endsWith("*/")) {
+      if (!line.trimLeft().startsWith("/**") && line.trimLeft().startsWith("/*")) {
+        alteredFileContent += line + newline;
+      } else if (line.trim().startsWith("/**") && line.trim().endsWith("*/")) {
         javadocFound = false;
         javadoc += line + newline;
       } else if (line.trimLeft().startsWith("/**")) {
         javadocFound = true;
+        javadoc += line + newline;
+      } else if (line.trimRight().endsWith("*/")) {
+        javadocFound = false;
         javadoc += line + newline;
       } else if (javadocFound) {
         javadoc += line + newline;
@@ -98,6 +106,7 @@ class JavadocComments {
           alteredFileContent += line + newline;
         }
       } else if (classPattern.stringMatch(line) == line) {
+        print(line);
         if (javadoc != "") {
           alteredFileContent += javadoc;
           alteredFileContent += line + newline;
