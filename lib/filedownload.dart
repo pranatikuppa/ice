@@ -90,7 +90,6 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   }
 
   void mainInfoPage() {
-    widget.controller.animateTo(5, duration: Duration(milliseconds: 500), curve: Curves.ease);
     widget.controller.jumpTo(5);
     setState(() {
       widget.pageRef1.nextPage.disabled = true;
@@ -99,8 +98,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   }
 
   void chooseFilePage() {
-    widget.controller.animateTo(800, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    widget.controller.jumpTo(800);
+    widget.controller.jumpTo(750);
     setState(() {
       widget.pageRef1.nextPage.disabled = true;
       widget.disabled = true;

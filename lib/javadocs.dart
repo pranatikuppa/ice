@@ -83,8 +83,12 @@ class JavadocComments {
         javadocFound = true;
         javadoc += line + newline;
       } else if (line.trimRight().endsWith("*/")) {
-        javadocFound = false;
-        javadoc += line + newline;
+        if (javadocFound) {
+          javadocFound = false;
+          javadoc += line + newline;
+        } else {
+          alteredFileContent += line + newline;
+        }
       } else if (javadocFound) {
         javadoc += line + newline;
       } else if (line == "" || line.trim() == "") {
@@ -106,16 +110,18 @@ class JavadocComments {
           alteredFileContent += line + newline;
         }
       } else if (classPattern.stringMatch(line) == line) {
-        print(line);
         if (javadoc != "") {
           alteredFileContent += javadoc;
           alteredFileContent += line + newline;
           javadoc = "";
         } else {
-          alteredFileContent = alteredFileContent + classJavadoc;
-          alteredFileContent = alteredFileContent + line + newline;
+          alteredFileContent += classJavadoc;
+          alteredFileContent += line + newline;
         }
       } else {
+        if (javadoc != "") {
+          alteredFileContent += javadoc + newline;
+        }
         alteredFileContent = alteredFileContent + line + newline;
         javadoc = "";
       }
