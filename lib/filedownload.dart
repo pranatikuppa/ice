@@ -124,9 +124,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    */
   void mainInfoPage() {
     setState(() {
-      widget.controller.jumpTo(3);
       widget.pageRef1.nextPage.disabled = true;
       widget.disabled = true;
+      widget.controller.jumpTo(3);
     });
   }
 
@@ -137,9 +137,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    */
   void chooseFilePage() {
     setState(() {
-      widget.controller.jumpTo(750);
       widget.pageRef1.nextPage.disabled = true;
       widget.disabled = true;
+      widget.controller.jumpTo(750);
     });
   }
 
