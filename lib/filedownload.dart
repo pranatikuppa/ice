@@ -5,9 +5,9 @@ import 'dart:js' as js;
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
 import 'package:ICE/directory.dart';
-
 import 'main.dart';
 
+/* The cyan color codes that are used in the them of this application. */
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
     100: Color.fromRGBO(21, 72, 84, 0.2),
@@ -21,15 +21,16 @@ Map<int, Color> cyanColorCodes = {
     900: Color.fromRGBO(21, 72, 84, 1)
   };
 
+/* Three variations of the cyan color codes used throughout the application. */
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
-String fileContents = "";
-TextEditingController textController = new TextEditingController();
-String filename = "";
 
+/* The file download page section where users can download the fixed java files. */
 class MyFileDownloadPage extends StatefulWidget {
   MyFileDownloadPage({Key key, this.homepage, this.controller, this.contents, this.disabled, this.listener}) : super(key:key);
+
+  /* Instances variables of the file download page section. */
   final String contents;
   final ScrollController controller;
   MyDirectoryPage pageRef1;
@@ -39,22 +40,37 @@ class MyFileDownloadPage extends StatefulWidget {
   var listener;
   final MyHomePage homepage;
 
+  /*
+   * Sets the first page reference of the file download page section. 
+   */
   void setPageRef1(StatefulWidget page1) {
     pageRef1 = page1;
   }
-  
+
+  /*
+   * Sets the second page reference of the file download page section. 
+   */
   void setPageRef2(StatefulWidget page2) {
     pageRef2 = page2;
   }
 
+  /*
+   * Sets the final file contents to the corresponding instance variable.
+   */
   void setFixedFileContents(String fixedContent) {
     finalFixedFileContents = fixedContent;
   }
 
+  /*
+   * Resets all the variables of the file download page section. 
+   */
   void resetAll() {
 
   }
 
+  /*
+   * Sets the listener of this section to the function list.  
+   */
   void setListener(void Function() list) {
     listener = list;
   }
@@ -63,8 +79,18 @@ class MyFileDownloadPage extends StatefulWidget {
   _MyFileDownloadPageState createState() => _MyFileDownloadPageState();
 }
 
+/* The state of the file download page section. */
 class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
+  /* Variables that control the state of the file download page section. */
+  TextEditingController _textController = new TextEditingController();
+  String _filename = "";
+
+  /*
+   * Takes in a name of a potential file and cleans the name
+   * based on spaces, extensions, etc. Only outputs the format
+   * of filename.java. 
+   */
   String cleanFilename(String name) {
     name = name.replaceAll(" ", "_");
     if (name == "") {
@@ -79,32 +105,49 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
     }
   }
 
+  /*
+   * Downloads the file to the device.  
+   */
   void downloadFile() {
     if (!widget.disabled) {
-      filename = cleanFilename(textController.text);
+      _filename = cleanFilename(_textController.text);
       final text = widget.finalFixedFileContents;
       final bytes = utf8.encode(text);
       final blob = html.Blob([bytes]);
-      js.context.callMethod("webSaveAs", [blob, filename]);
+      js.context.callMethod("webSaveAs", [blob, _filename]);
     }
   }
 
+  /*
+   * Sets the state of the page by scrolling up
+   * to the main info page. Sets the other pages to be disabled.
+   */
   void mainInfoPage() {
-    widget.controller.jumpTo(5);
     setState(() {
+      widget.controller.jumpTo(3);
       widget.pageRef1.nextPage.disabled = true;
       widget.disabled = true;
     });
   }
 
+  /*
+   * Sets the state of the page by scrolling up 
+   * to the choose file page section. Sets the 
+   * later pages to be disabled.
+   */
   void chooseFilePage() {
-    widget.controller.jumpTo(750);
     setState(() {
+      widget.controller.jumpTo(750);
       widget.pageRef1.nextPage.disabled = true;
       widget.disabled = true;
     });
   }
 
+  /*
+   * Helper method that returns a text widget based on
+   * size, text and color. Assumes that the text is center 
+   * aligned. 
+   */
   Text getText(double size, String text, Color color) {
     return Text(text,
       textAlign: TextAlign.center,
@@ -117,6 +160,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
     );
   }
 
+  /*
+   * Helper method that returns a raised button based on the 
+   * method to be called upon on pressed, the button text and 
+   * the size of the button.  
+   */
   RaisedButton getButton(var method, String buttonText, double size) {
     return RaisedButton(
       onPressed: () {
@@ -146,9 +194,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   @override
   Widget build(BuildContext context) {
+    /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
 
+    /* The container widget that displays all the UI elements of the page section. */
     return Container(
       color: Colors.white,
       alignment: Alignment.center,
@@ -167,9 +217,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
             height: 60,
             child: TextField(
               onChanged: (String t) {
-                filename = t;
+                _filename = t;
               },
-              controller: textController,
+              controller: _textController,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: darkCyan,

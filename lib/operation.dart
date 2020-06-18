@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:ICE/directory.dart';
 import 'package:ICE/filedownload.dart';
 import 'package:ICE/indentations.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
 import 'package:ICE/whitespace.dart';
 
+/* The cyan color codes that are used in the them of this application. */
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
     100: Color.fromRGBO(21, 72, 84, 0.2),
@@ -23,12 +23,16 @@ Map<int, Color> cyanColorCodes = {
     900: Color.fromRGBO(21, 72, 84, 1)
   };
 
+/* Three variations of the cyan color codes used throughout the application. */
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
 
+/* The operation page section where users can select which operations to perform on their files. */
 class MyOperationPage extends StatefulWidget {
   MyOperationPage({Key key, this.homepage, this.controller, this.nextPage, this.disabled, this.listener}) : super(key: key);
+  
+  /* Instances variables of the operation page section */
   bool disabled;
   final ScrollController controller;
   final MyFileDownloadPage nextPage; 
@@ -37,14 +41,17 @@ class MyOperationPage extends StatefulWidget {
   var listener;
   final MyHomePage homepage;
 
+  /* Sets the file contents provided to the corresponding instance variable. */
   void setFileContents(String contents) {
     fileContents = contents;
   }
 
+  /* Resets the status of all variables in the section. */
   void resetAll() {
 
   }
 
+  /* Sets the listener of this page section to the give function list. */
   void setListener(void Function() list) {
     listener = list;
   }
@@ -53,7 +60,9 @@ class MyOperationPage extends StatefulWidget {
   _MyOperationPageState createState() => _MyOperationPageState();
 }
 
+/* The state of the operation page section. */
 class _MyOperationPageState extends State<MyOperationPage> {
+  /* All the variables that are needed to keep track of the operation page section's state. */
   bool _javadoc = false;
   bool _singleComment = false;
   bool _whitespace = false;
@@ -71,6 +80,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
   double _indentationOpacity = 0.5;
   Color _errorColor = lightCyan;
 
+  /* 
+   * Sets the state of the page by moving to the next page section. 
+   * Moves the page down using the scroll controller and passes along
+   * user data.
+   */
   void nextPage(String result) {
     setState(() {
       widget.fixedFileContent = result;
@@ -79,6 +93,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     });
   }
 
+  /*
+   * Sets the javadoc operation status based on 
+   * the current value. Toggles between true and false
+   * updating the UI as needed. 
+   */
   void setJavadoc() {
     if (!_javadoc) {
       _javadoc = true;
@@ -91,6 +110,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  /*
+   * Sets the single line operation status based on 
+   * the current value. Toggles between true and false
+   * updating the UI as needed. 
+   */
   void setSingleLine() {
     if (!_singleComment) {
       _singleComment = true;
@@ -103,6 +127,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  /*
+   * Sets the multiline operation status based on 
+   * the current value. Toggles between true and false
+   * updating the UI as needed. 
+   */
   void setMultiLine() {
     if (!_multiComment) {
       _multiComment = true;
@@ -115,6 +144,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  /*
+   * Sets the whitespace operation status based on 
+   * the current value. Toggles between true and false
+   * updating the UI as needed. 
+   */
   void setWhitespaces() {
     if (!_whitespace) {
       _whitespace = true;
@@ -127,6 +161,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  /*
+   * Sets the indentation operation status based on 
+   * the current value. Toggles between true and false
+   * updating the UI as needed. 
+   */
   void setIndentation() {
     if (!_indentation) {
       _indentation = true;
@@ -139,6 +178,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  /*
+   * Runs the software using all the operation states 
+   * and returns the updated contents after applying all 
+   * selected operations.  
+   */
   String runSoftware(String file, bool javdoc, bool comment, bool multicomment, bool space, bool indent) {
     String contents = file;
     if (comment) {
@@ -164,7 +208,13 @@ class _MyOperationPageState extends State<MyOperationPage> {
     return contents;
   }
 
-  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac) {
+  /*
+   * Helper method that returns an animated opacity raised button 
+   * that is used for the users to select the operation. Takes in
+   * the method to be called upon pressing, the button text
+   * and the opacity of the button.  
+   */
+  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, Icon customIcon) {
     return AnimatedOpacity(
       child: RaisedButton(
         onPressed: () {
@@ -183,10 +233,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
         child: Container(
           child: Row(
             children: [
-              Icon(
-                Icons.code,
-                color: lightCyan,
-              ),
+              customIcon,
               Text(
                 buttonText,
                 style: TextStyle(
@@ -204,6 +251,10 @@ class _MyOperationPageState extends State<MyOperationPage> {
     );
   }
 
+  /*
+   * Helper method that returns a text widget based on
+   * the size, text, color and alignment.  
+   */
   Text getText(double size, String text, Color color, TextAlign t) {
     return Text(text,
       textAlign: t,
@@ -216,6 +267,10 @@ class _MyOperationPageState extends State<MyOperationPage> {
     );
   }
 
+  /*
+   * Returns a check icon with the specified 
+   * color variable linked to the icon. 
+   */
   Icon getIcon(Color iconCol) {
     return Icon(
       Icons.check,
@@ -224,15 +279,26 @@ class _MyOperationPageState extends State<MyOperationPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
+    /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
-    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity);
-    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity);
-    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity);
-    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity); 
-    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity);
 
+    /* Icons for each of the buttons for each operation. */
+    Icon jIcon = Icon(Icons.description, color: lightCyan);
+    Icon sIcon = Icon(Icons.subject, color: lightCyan);
+    Icon mIcon = Icon(Icons.code, color: lightCyan);
+    Icon wIcon = Icon(Icons.space_bar, color: lightCyan);
+    Icon iIcon = Icon(Icons.format_indent_increase, color: lightCyan);
+
+    /* Buttons for each operation provided in the application. */
+    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity, jIcon);
+    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity, sIcon);
+    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity, mIcon);
+    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity, wIcon); 
+    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity, iIcon);
+
+    /* The container widget that displays all the UI elements of the page seciton. */
     return Container(
       color: lightCyan,
       alignment: Alignment.center,

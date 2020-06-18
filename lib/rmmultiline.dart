@@ -28,7 +28,7 @@ class RmMultiLineComments {
 
   /*
    * A helper method that takes in the 
-   * lines as a list and removes all the single line
+   * lines as a list and removes all the multi line
    * comments from the given content. Alters
    * the data directly by writing the content
    * to the String alteredFileContent.

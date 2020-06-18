@@ -4,6 +4,7 @@ import 'package:ICE/main.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
 
+/* The cyan color codes that are used in the them of this application. */
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
     100: Color.fromRGBO(21, 72, 84, 0.2),
@@ -17,27 +18,27 @@ Map<int, Color> cyanColorCodes = {
     900: Color.fromRGBO(21, 72, 84, 1)
   };
 
+/* Three variations of the cyan color codes used throughout the application. */
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
-bool isValidFile;
 
+/* File page section where users can choose which java file to upload for style fixes. */
 class MyDirectoryPage extends StatefulWidget {
   MyDirectoryPage({Key key, this.homepage, this.controller, this.nextPage, this.listener}) : super(key:key);
 
+  /* Instance variables of the file page section. */
   final ScrollController controller;
   final MyOperationPage nextPage;
   final MyHomePage homepage;
   var listener;
 
-  bool isValidFileChosen() {
-    return isValidFile;
-  }
-
+  /* Resets all the variables of this page. */
   void resetAll() {
 
   }
 
+  /* Sets the listener of the page to the given function list. */
   void setListener(void Function() list) {
     listener = list;
   }
@@ -46,7 +47,9 @@ class MyDirectoryPage extends StatefulWidget {
   _MyDirectoryPageState createState() => _MyDirectoryPageState();
 }
 
+/* State of the Choose file page. */
 class _MyDirectoryPageState extends State<MyDirectoryPage> {
+  /* Variables that are needed to track the state of the page. */
   String _fileString = "";
   bool _validFileChosen = false;
   Text _displayText = Text('');
@@ -61,6 +64,10 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
       ),
     );
 
+  /*
+   * Method that uses the HTML plugin to 
+   * open the upload dialog on the device. 
+   */
   uploadFiles() async {
     InputElement uploadInput = FileUploadInputElement();
     uploadInput.multiple = true;
@@ -102,12 +109,21 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
     });
   }
 
+  /*
+   * If the file string is not empty then
+   * validates the file. 
+   */
   void validateFile() {
     if (_fileString.isEmpty) {
       _validFileChosen = false;
     }
   }
 
+  /*
+   * Changes the state of the page by moving to the next page.
+   * Scrolls down with the scroll controller and passes along 
+   * user data to the next page.
+   */
   void nextPage() {
     setState(() {
       widget.controller.animateTo(1600, duration: Duration(milliseconds: 500), curve: Curves.ease);
@@ -115,10 +131,18 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
     });
   }
 
+  /*
+   * Saves the file contents provided in the state of the page. 
+   */
   void saveFileContents(String contents) {
     _fileString = contents;
   }
 
+  /*
+   * Helper method that returns a text widget based on
+   * size, text and color. Assumes that the alignment will be 
+   * centered.
+   */
   Text getText(double size, String text, Color color) {
     return Text(text,
       textAlign: TextAlign.center,
@@ -130,10 +154,14 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
       ),
     );
   }
+
 @override
   Widget build(BuildContext context) {
+    /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
     double blockSize = width / 100;
+
+    /* The container widget that contains the UI elements of this page section. */
     return Container(
       color: Colors.white,
       alignment: Alignment.center,

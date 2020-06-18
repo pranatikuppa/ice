@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:ICE/directory.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/* The cyan color codes that are used in the them of this application. */
 Map<int, Color> cyanColorCodes = {
     50: Color.fromRGBO(21, 72, 84, 0.1),
     100: Color.fromRGBO(21, 72, 84, 0.2),
@@ -20,6 +21,7 @@ Map<int, Color> cyanColorCodes = {
     900: Color.fromRGBO(21, 72, 84, 1)
   };
 
+/* Three variations of the cyan color codes used throughout the application. */
 MaterialColor darkCyan = MaterialColor(0xFF154854, cyanColorCodes);
 MaterialColor lightCyan = MaterialColor(0xFFe3ecef, cyanColorCodes);
 MaterialColor midCyan = MaterialColor(0xFF6493a1, cyanColorCodes);
@@ -28,6 +30,7 @@ void main() {
   runApp(MyApp());
 }
 
+/* Main application that runs UI. */
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,10 +46,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/* Home page that users first see upon opening the application. */
 class MyHomePage extends StatefulWidget {
   final String title;
-  ScrollPhysics scrollPhysics;
-
   MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
@@ -55,6 +57,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
 
+  /*
+   * A helper method that generates text based on the 
+   * size, text, color and alignment. 
+   */
   Text getText(double size, String text, Color color, TextAlign t) {
     return Text(text,
       textAlign: t,
@@ -69,14 +75,30 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
     double blockSize = width/100;
+
+    /* Widget that controlls the scrolling of the page. */
     ScrollController scrollController = ScrollController();
+
+    /* File download page where users download their fixed java files. */
     MyFileDownloadPage fileDownloadPage = MyFileDownloadPage(homepage: widget, controller: scrollController, disabled: true);
+    
+    /* Operation page where users select which operations to perform. */
     MyOperationPage operationPage = MyOperationPage(homepage: widget, controller: scrollController, nextPage: fileDownloadPage, disabled: true);
+    
+    /* The choose file page where users choose the inital file. */
     MyDirectoryPage directoryPage = MyDirectoryPage(homepage: widget, controller: scrollController, nextPage: operationPage);
+    
+    /* Setting the page references for the file download page. */
     fileDownloadPage.setPageRef1(directoryPage);
     fileDownloadPage.setPageRef2(widget);
+
+    /*
+     * Listener for the scroll controller that jumps back to a certain 
+     * scroll position based on which pages are disabled. 
+     */
     scrollListener() {
       if (directoryPage.nextPage.disabled) {
         if (scrollController.offset > 800) {
@@ -89,20 +111,20 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           }
         }
     }
-    scrollController.addListener(scrollListener);
+
+    /* Adding listeners to the scroll controller and pages. */
     scrollController.addListener(scrollListener);
     directoryPage.setListener(scrollListener);
     operationPage.setListener(scrollListener);
     fileDownloadPage.setListener(scrollListener);
 
-
+    /* Main scaffold widget of the app that displays the UI elements. */
     return Scaffold(
       body: FractionallySizedBox(
         child: Container(
           color: lightCyan,
           alignment: Alignment.center,
           child: CustomScrollView(
-            physics: widget.scrollPhysics,
             controller: scrollController,
             slivers: [
               SliverAppBar(
