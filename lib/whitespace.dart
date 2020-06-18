@@ -27,11 +27,13 @@ class Whitespace {
     for (String item in noSpaceAfterKeywords) {
       noSpaceAfter(fileContent.split("\n"), item);
     }
-    List<String> spaceBeforeKeywords = ["&&", "||", "{", "*", "+", "-", "/", "=", "+="];
+    List<String> spaceBeforeKeywords = ["&&", "||", "{", "*", "+", "-", "/", "=", "+=", "assert", "catch", "do", "else", "finally", 
+                                        "for", "if", "return", "synchronized", "try", "while"];
     for (String item in spaceBeforeKeywords) {
       spaceBefore(fileContent.split("\n"), item);
     }
-    List<String> spaceAfterKeywords = ["&&", "||", ";", ",", "+", "/", "-", "*", "=", "+="];
+    List<String> spaceAfterKeywords = ["&&", "||", ";", ",", "+", "/", "-", "*", "=", "+=", "assert", "catch", "do", "else", "finally", 
+			                                "for", "if", "return", "synchronized", "try", "while"];
     for (String item in spaceAfterKeywords) {
       spaceAfter(fileContent.split("\n"), item);
     }
