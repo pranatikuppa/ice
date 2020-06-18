@@ -47,7 +47,7 @@ class RmMultiLineComments {
       } else {
         newline = "";
       }
-      if (line.contains("/**") && line.contains("*/")) {
+      if (line.contains("/*") && line.contains("*/")) {
         if (line.indexOf("/**") != line.indexOf("/*")) {
           openReached = false;
           closeReached = false;
@@ -59,16 +59,20 @@ class RmMultiLineComments {
           closeReached = false;
         }
       } else if (line.contains("*/")) {
-        closeReached = true;
+        if (openReached) {
+          openReached = false;
+          closeReached = true;
+        }
       }
       toWrite = line;
+      int open = toWrite.indexOf("/*");
+      int close = toWrite.indexOf("*/") + 2;
       if (oneLine) {
-        int open = toWrite.indexOf("/*");
-        int close = toWrite.indexOf("*/") + 1;
-        toWrite.replaceFirst(toWrite.substring(open, close), "");
+        toWrite = line.replaceFirst(line.substring(open, close), "");
       } else if (openReached && !closeReached) {
         toWrite = "";
       } else if (closeReached) {
+        toWrite = line.substring(close);
         openReached = false;
         closeReached = false;
       }

@@ -4,6 +4,7 @@ import 'package:ICE/directory.dart';
 import 'package:ICE/filedownload.dart';
 import 'package:ICE/indentations.dart';
 import 'package:ICE/main.dart';
+import 'package:ICE/rmmultiline.dart';
 import 'package:ICE/singlelines.dart';
 import 'package:flutter/material.dart';
 import 'package:ICE/javadocs.dart';
@@ -57,12 +58,15 @@ class _MyOperationPageState extends State<MyOperationPage> {
   bool _singleComment = false;
   bool _whitespace = false;
   bool _indentation = false;
+  bool _multiComment = false;
   Color _javadocIcon = lightCyan;
   Color _singleCommentIcon = lightCyan;
+  Color _multiCommentIcon = lightCyan;
   Color _whitespaceIcon = lightCyan;
   Color _indentationIcon = lightCyan;
   double _javadocOpacity = 0.5;
   double _singleCommentOpacity = 0.5;
+  double _multiCommentOpacity = 0.5;
   double _whitespaceOpacity = 0.5;
   double _indentationOpacity = 0.5;
   Color _errorColor = lightCyan;
@@ -99,6 +103,18 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
+  void setMultiLine() {
+    if (!_multiComment) {
+      _multiComment = true;
+      _multiCommentIcon = midCyan;
+      _multiCommentOpacity = 1;
+    } else {
+      _multiComment = false;
+      _multiCommentIcon = lightCyan;
+      _multiCommentOpacity = 0.5;
+    }
+  }
+
   void setWhitespaces() {
     if (!_whitespace) {
       _whitespace = true;
@@ -123,15 +139,19 @@ class _MyOperationPageState extends State<MyOperationPage> {
     }
   }
 
-  String runSoftware(String file, bool javdoc, bool comment, bool space, bool indent) {
+  String runSoftware(String file, bool javdoc, bool comment, bool multicomment, bool space, bool indent) {
     String contents = file;
-    if (indent) {
-      Indentations indents = new Indentations();
-      contents = indents.main(contents);
-    }
     if (comment) {
       SingleLineComments comments = new SingleLineComments();
       contents = comments.main(contents);
+    }
+    if (multicomment) {
+      RmMultiLineComments multis = new RmMultiLineComments();
+      contents = multis.main(contents);
+    }
+    if (indent) {
+      Indentations indents = new Indentations();
+      contents = indents.main(contents);
     }
     if (space) {
       Whitespace whitespace = new Whitespace();
@@ -144,7 +164,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
     return contents;
   }
 
-  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, ) {
+  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac) {
     return AnimatedOpacity(
       child: RaisedButton(
         onPressed: () {
@@ -209,6 +229,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
     double blockSize = width / 100;
     AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity);
     AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity);
+    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity);
     AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity); 
     AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity);
 
@@ -257,6 +278,16 @@ class _MyOperationPageState extends State<MyOperationPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      multiCommentButton,
+                      getText(blockSize * 1.1, '\nRemoves Multi\nLine Comments', darkCyan, TextAlign.center),
+                      Text(''),
+                      getIcon(_multiCommentIcon),
+                    ],
+                  ),
+                  Text('\t\t'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
                       whitespaceButton,
                       getText(blockSize * 1.1, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
                       Text(''),
@@ -279,7 +310,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
               RaisedButton(
                 onPressed: () {
                   if (!widget.disabled) {
-                    if (!_javadoc && !_singleComment && !_indentation && !_whitespace) {
+                    if (!_javadoc && !_singleComment && !_multiComment && !_indentation && !_whitespace) {
                       setState(() {
                         _errorColor = Colors.red;
                       });
@@ -287,7 +318,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                       String result = "";
                       setState(() {
                         _errorColor = lightCyan;
-                        result = runSoftware(widget.fileContents, _javadoc, _singleComment, _whitespace, _indentation);
+                        result = runSoftware(widget.fileContents, _javadoc, _singleComment, _multiComment, _whitespace, _indentation);
                         widget.nextPage.disabled = false;
                       });
                       nextPage(result);
