@@ -136,9 +136,10 @@ class JavadocComments {
   bool validateJavadocComment(String header, String javadocComment) {
     bool returnVal = containsReturn(header);
     List<String> paramNames = getParamList(header);
+    String javadocLower = javadocComment.toLowerCase();
     if (returnVal) {
-      if (!(javadocComment.contains("@return") || javadocComment.contains("returns")
-        || javadocComment.contains("returning")|| javadocComment.contains("return"))) {
+      if (!(javadocLower.contains("@return") || javadocLower.contains("returns")
+        || javadocLower.contains("returning")|| javadocLower.contains("return"))) {
         return false;
       }
     }
