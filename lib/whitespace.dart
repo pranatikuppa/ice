@@ -365,6 +365,8 @@ class Whitespace {
   bool checkMultiStar(String line, int ind) {
     if (charAt(line, ind + 1) == '/' || charAt(line, ind - 1) == '/') {
       return true;
+    } else if (charAt(line, ind + 1) == '*' || charAt(line, ind - 1) == '*') {
+      return true; 
     }
     return false;
   }
