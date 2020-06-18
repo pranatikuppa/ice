@@ -1,4 +1,3 @@
-
 /*
  * RmMultiLineComments removes normal multiline comments denoted by a 
  * slash followed by a single star (/ *).
@@ -23,7 +22,7 @@ class RmMultiLineComments {
   String main(String file) {
     fileContent = file;
     List<String> contentList = fileContent.split("\n");
-    removeSingleLines(contentList);
+    removeMultiLine(contentList);
     return alteredFileContent;
   }
 
@@ -35,28 +34,46 @@ class RmMultiLineComments {
    * to the String alteredFileContent.
    */
   removeMultiLine(List<String> lines) {
-    alteredFileContent = "";
-    int numLines = lines.length;
     int lineNum = 1;
+    int numLines = lines.length;
+    String toWrite = "";
+    bool openReached = false;
+    bool closeReached = false;
+    bool oneLine = false;
+    String newline = "";
     for (String line in lines) {
-      String newline = "";
       if (lineNum < numLines) {
         newline = "\n";
-      }
-      if (line.contains("//")) {
-        int commentIndex = line.indexOf("//", 0);
-        if (commentIndex != 0) {
-          String subString = line.substring(0, commentIndex);
-          if (subString.trim() == "") {
-            alteredFileContent = alteredFileContent + subString;
-            alteredFileContent = alteredFileContent + newline;
-          }
-        }
       } else {
-        alteredFileContent = alteredFileContent + line;
-        alteredFileContent = alteredFileContent + newline;
+        newline = "";
       }
-      lineNum++;
+      if (line.contains("/**") && line.contains("*/")) {
+        if (line.indexOf("/**") != line.indexOf("/*")) {
+          openReached = false;
+          closeReached = false;
+          oneLine = true;
+        }
+      } else if (line.contains("/*")) {
+        if (line.indexOf("/**") != line.indexOf("/*")) {
+          openReached = true;
+          closeReached = false;
+        }
+      } else if (line.contains("*/")) {
+        closeReached = true;
+      }
+      toWrite = line;
+      if (oneLine) {
+        int open = toWrite.indexOf("/*");
+        int close = toWrite.indexOf("*/") + 1;
+        toWrite.replaceFirst(toWrite.substring(open, close), "");
+      } else if (openReached && !closeReached) {
+        toWrite = "";
+      } else if (closeReached) {
+        openReached = false;
+        closeReached = false;
+      }
+      oneLine = false;
+      alteredFileContent += toWrite + newline;
     }
   }
 }
