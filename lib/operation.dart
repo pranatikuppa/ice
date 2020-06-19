@@ -89,7 +89,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
     setState(() {
       widget.fixedFileContent = result;
       widget.nextPage.setFixedFileContents(widget.fixedFileContent);
-      widget.controller.animateTo(2400, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      widget.controller.animateTo(2310, duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -214,7 +214,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
    * the method to be called upon pressing, the button text
    * and the opacity of the button.  
    */
-  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, Icon customIcon) {
+  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, Icon customIcon, double size) {
     return AnimatedOpacity(
       child: RaisedButton(
         onPressed: () {
@@ -238,7 +238,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                 buttonText,
                 style: TextStyle(
                   fontFamily: "Open Sans",
-                  fontSize: 20,
+                  fontSize: size,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -280,10 +280,6 @@ class _MyOperationPageState extends State<MyOperationPage> {
 
   @override
   Widget build(BuildContext context) {  
-    /* Measurements used to resize elements based on window size. */
-    double width = MediaQuery.of(context).size.width;
-    double blockSize = width / 100;
-
     /* Icons for each of the buttons for each operation. */
     Icon jIcon = Icon(Icons.description, color: lightCyan);
     Icon sIcon = Icon(Icons.subject, color: lightCyan);
@@ -292,11 +288,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
     Icon iIcon = Icon(Icons.format_indent_increase, color: lightCyan);
 
     /* Buttons for each operation provided in the application. */
-    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity, jIcon);
-    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity, sIcon);
-    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity, mIcon);
-    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity, wIcon); 
-    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity, iIcon);
+    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity, jIcon, 18);
+    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity, sIcon, 18);
+    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity, mIcon, 18);
+    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity, wIcon, 18); 
+    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity, iIcon, 18);
 
     /* The container widget that displays all the UI elements of the page seciton. */
     return Container(
@@ -308,11 +304,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getText(blockSize * 5.5, 'Choose an operation', midCyan, TextAlign.center),
+              getText(80, 'Choose an operation', midCyan, TextAlign.center),
               getText(
-                blockSize * 1.5,
-                'Choose the operations you want to perform on the .java files.\nThe software will ' +
-                'only apply the selected operations on the contents\nof the .java file and you can download' +
+                20,
+                'Choose the operations you want to perform on the .java files. The software will ' +
+                'only apply\nthe selected operations on the contents of the .java file and you can download' +
                 ' the fixed version in the next step:\n\n',
                 darkCyan,
                 TextAlign.center
@@ -325,7 +321,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       javadocButton,
-                      getText(blockSize * 1.1, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
+                      getText(15, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_javadocIcon),
                     ],
@@ -335,7 +331,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       singleLineButton,
-                      getText(blockSize * 1.1, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
+                      getText(15, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_singleCommentIcon),
                     ],
@@ -345,17 +341,24 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       multiCommentButton,
-                      getText(blockSize * 1.1, '\nRemoves Multi\nLine Comments', darkCyan, TextAlign.center),
+                      getText(15, '\nRemoves Multi\nLine Comments', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_multiCommentIcon),
                     ],
                   ),
+                ],
+              ),
+              Text('\n'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
                   Text('\t\t'),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       whitespaceButton,
-                      getText(blockSize * 1.1, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
+                      getText(15, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_whitespaceIcon),
                     ],
@@ -365,14 +368,14 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       indentationButton,
-                      getText(blockSize * 1.1, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
+                      getText(15, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_indentationIcon),
                     ],
                   ),
                 ],
               ),
-              Text('\n\n'),
+              Text('\n'),
               RaisedButton(
                 onPressed: () {
                   if (!widget.disabled) {
@@ -399,11 +402,11 @@ class _MyOperationPageState extends State<MyOperationPage> {
                 padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                 clipBehavior: Clip.none,
                 child: Container(
-                  child: getText (blockSize * 1.4, 'Run', lightCyan, TextAlign.center),
+                  child: getText (18, 'Run', lightCyan, TextAlign.center),
                 ),
               ),
               Text(
-                '\n\n* Please select at least one operation',
+                '\n* Please select at least one operation',
                 style: TextStyle(
                   fontFamily: 'Open Sans',
                   fontWeight: FontWeight.w300,

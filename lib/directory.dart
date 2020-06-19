@@ -126,7 +126,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
    */
   void nextPage() {
     setState(() {
-      widget.controller.animateTo(1600, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
       widget.nextPage.setFileContents(_fileString);
     });
   }
@@ -157,10 +157,6 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
 
 @override
   Widget build(BuildContext context) {
-    /* Measurements used to resize elements based on window size. */
-    double width = MediaQuery.of(context).size.width;
-    double blockSize = width / 100;
-
     /* The container widget that contains the UI elements of this page section. */
     return Container(
       color: Colors.white,
@@ -171,9 +167,9 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getText(blockSize * 6, 'Choose a file', midCyan),
+              getText(80, 'Choose a file', midCyan),
               getText(
-                blockSize * 1.5,
+                20,
                 'Upload a file (.java file) you would like the program to clear\nstyle check errors:\n\n',
                 darkCyan
               ),
@@ -210,7 +206,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
                 elevation: 0,
                 padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                 focusElevation: 2.0,
-                child: getText(blockSize * 1.4, 'Upload File', lightCyan),
+                child: getText(18, 'Upload File', lightCyan),
               ),
               Text('\n\n'),
               RaisedButton(
@@ -233,7 +229,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
                 elevation: 0,
                 padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                 focusElevation: 2.0,
-                child: getText(blockSize * 1.4, 'Continue', lightCyan),
+                child: getText(18, 'Continue', lightCyan),
               ),
             ],
           ),

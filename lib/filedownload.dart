@@ -115,8 +115,12 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
       final bytes = utf8.encode(text);
       final blob = Blob([bytes]);
       js.context.callMethod("webSaveAs", [blob, _filename]);
+      setState(() {
+        widget.pageRef1.nextPage.disabled = false;
+        widget.pageRef1.nextPage.nextPage.disabled = false;
+      });
+      widget.controller.animateTo(2320, duration: Duration(milliseconds: 100), curve: Curves.ease);
     }
-    widget.controller.animateTo(2410, duration: Duration(milliseconds: 100), curve: Curves.ease);
   }
 
   /*
@@ -199,10 +203,6 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   @override
   Widget build(BuildContext context) {
-    /* Measurements used to resize elements based on window size. */
-    double width = MediaQuery.of(context).size.width;
-    double blockSize = width / 100;
-
     /* The container widget that displays all the UI elements of the page section. */
     return Container(
       color: Colors.white,
@@ -210,9 +210,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget> [
-          getText(blockSize * 5.5, 'Download your file', midCyan),
+          getText(80, 'Download your file', midCyan),
           getText(
-            blockSize * 1.5,
+            20,
             'Type in the name you want for the file (ex. filename.java) and then click "Download File."\n' +
             'If you do not enter a name for the file we will give it a generic name:\n\n',
             darkCyan,
@@ -266,7 +266,7 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
                 'Download File',
                 style: TextStyle(
                   fontFamily: "Open Sans",
-                  fontSize: blockSize * 1.4,
+                  fontSize: 18,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -276,9 +276,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getButton(chooseFilePage, 'Choose New File', blockSize * 1.4),
+              getButton(chooseFilePage, 'Choose New File', 18),
               Text("\t\t"),
-              getButton(mainInfoPage, 'Go To Main Page', blockSize * 1.4),
+              getButton(mainInfoPage, 'Go To Main Page', 18),
             ],
           ),
         ],

@@ -77,7 +77,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
-    double blockSize = width/100;
 
     /* Widget that controlls the scrolling of the page. */
     ScrollController scrollController = ScrollController();
@@ -101,13 +100,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
      */
     scrollListener() {
       if (directoryPage.nextPage.disabled) {
-        if (scrollController.offset > 800) {
-          scrollController.jumpTo(799);
+        if (scrollController.offset > 750) {
+          scrollController.jumpTo(749);
         }
       }
       if (operationPage.nextPage.disabled) {
-          if (scrollController.offset > 1600) {
-            scrollController.jumpTo(1599);
+          if (scrollController.offset > 1500) {
+            scrollController.jumpTo(1499);
           }
         }
     }
@@ -120,41 +119,42 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
     /* Main scaffold widget of the app that displays the UI elements. */
     return Scaffold(
-      body: FractionallySizedBox(
-        child: Container(
-          color: lightCyan,
-          alignment: Alignment.center,
-          child: CustomScrollView(
+      appBar: AppBar(
+        titleSpacing: 0.6,
+        centerTitle: true,
+        actions: [
+          RaisedButton(
+            color: lightCyan,
+            hoverElevation: 0,
+            elevation: 0,
+            focusElevation: 0,
+            onPressed: () async {
+              const url = "https://docs.google.com/forms/d/1A8qwG5T8pZIKmCaPYYSiEoqgzKsWMKBYmpUAqJ4zWw0/prefill";
+              if (await canLaunch(url)) {
+                launch(url);
+              } 
+            },
+            child: getText(15, 'Contact Us', midCyan, TextAlign.center),
+          ),
+          Text('\t\t\t'),
+        ],
+        backgroundColor: lightCyan,
+        elevation: 2,
+        title: getText(15, 'ICEcap v1.0', midCyan, TextAlign.center),
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: 1440,
+          child: ListView(
             controller: scrollController,
-            slivers: [
-              SliverAppBar(
-                titleSpacing: 0.6,
-                collapsedHeight: 57,
-                centerTitle: true,
-                actions: [
-                  RaisedButton(
-                    color: lightCyan,
-                    hoverElevation: 0,
-                    elevation: 0,
-                    focusElevation: 0,
-                    onPressed: () async {
-                      const url = "https://docs.google.com/forms/d/1A8qwG5T8pZIKmCaPYYSiEoqgzKsWMKBYmpUAqJ4zWw0/prefill";
-                      if (await canLaunch(url)) {
-                        launch(url);
-                      } 
-                    },
-                    child: getText(blockSize * 1.2, 'Contact Us', midCyan, TextAlign.center),
-                  ),
-                  Text('\t\t\t'),
-                ],
-                pinned: true,
-                backgroundColor: lightCyan,
-                elevation: 2,
-                title: getText(blockSize * 1.2, 'ICEcap v1.0', midCyan, TextAlign.center),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
+            children: [
+              Container(
+                height: 750,
+                color: lightCyan,
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -163,23 +163,24 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                           alignment: Alignment.center,
                           repeat: ImageRepeat.noRepeat,
                           image: AssetImage('assets/mountains.png'),
-                          width: blockSize * 35,
-                          height: blockSize * 35,
+                          width: 450,
+                          height: 450,
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            getText(blockSize * 12, 'ICEcΔp', midCyan, TextAlign.left),
-                            getText(blockSize * 2.4, '(Interactive Convention Editor)\n\n', midCyan, TextAlign.left),
+                            getText(150, 'ICEcΔp', midCyan, TextAlign.left),
+                            getText(28, '(Interactive Convention Editor)\n\n', midCyan, TextAlign.left),
                           ],
                         ),
                       ],
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         getText(
-                          blockSize * 1.6, 
+                          22, 
                           'We all have faced issues with the 200+ style check' + 
                           ' errors that appear right when we are ready to submit ' + 
                           'our\nCS 61B projects. In three easy steps below you can get rid of many style check errors from your project.\n\n',
@@ -188,53 +189,55 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         ),
                         RaisedButton(
                           onPressed: () {
-                            scrollController.animateTo(800, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                            scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
                           },
                           color: midCyan,
                           textColor: lightCyan,
                           elevation: 0,
                           padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
                           focusElevation: 2.0,
-                          child: getText(blockSize * 1.4, 'Start', lightCyan, TextAlign.center),
+                          child: getText(18, 'Start', lightCyan, TextAlign.center),
                         ),
                         Text("\n\n\n"),
                       ],
                     ),
-                    Container(
-                      width: 20,
-                      height: 800,
-                      color: Colors.white,
-                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 70, top: 70),
-                      child: directoryPage,
-                    ),
-                    Container(
-                      width: 20,
-                      height: 800,
-                      color: lightCyan,
-                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 50, top: 50),
-                      child: operationPage,
-                    ),
-                    Container(
-                      width: 20,
-                      height: 800,
-                      color: Colors.white,
-                      padding: EdgeInsets.only(left: 50, right: 50, bottom: 50, top: 50),
-                      child: fileDownloadPage,
-                    ),
-                    Text(
-                      "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: "Open Sans",
-                        fontSize: blockSize * 1.3,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.italic,
-                        color: darkCyan,
-                      ),
-                    ),
-                  ]
+                  ],
                 ),
               ),
+              Container(
+                height: 750,
+                color: Colors.white,
+                alignment: Alignment.center,
+                child: directoryPage,
+              ),
+              Container(
+                height: 750,
+                color: lightCyan,
+                alignment: Alignment.center,
+                child: operationPage,
+              ),
+              Container(
+                height: 750,
+                color: Colors.white,
+                alignment: Alignment.center,
+                child: fileDownloadPage,
+              ),
+              Container(
+                color: lightCyan,
+                height: 60,
+                alignment: Alignment.center,
+                child: Text(
+                  "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: "Open Sans",
+                    fontSize: 15,
+                    fontWeight: FontWeight.w300,
+                    fontStyle: FontStyle.italic,
+                    color: darkCyan,
+                  ),
+                ),
+              ), 
             ],
           ),
         ),
