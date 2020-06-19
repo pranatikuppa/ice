@@ -99,12 +99,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
      * scroll position based on which pages are disabled. 
      */
     scrollListener() {
-      if (directoryPage.nextPage.disabled) {
+      if (operationPage.disabled) {
         if (scrollController.offset > 750) {
           scrollController.jumpTo(749);
         }
       }
-      if (operationPage.nextPage.disabled) {
+      if (fileDownloadPage.disabled) {
           if (scrollController.offset > 1500) {
             scrollController.jumpTo(1499);
           }

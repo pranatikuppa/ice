@@ -109,17 +109,17 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * Downloads the file to the device.  
    */
   void downloadFile() {
+    setState(() {
+        widget.pageRef1.nextPage.disabled = false;
+        widget.disabled = false;
+    });
     if (!widget.disabled) {
       _filename = cleanFilename(_textController.text);
       final text = widget.finalFixedFileContents;
       final bytes = utf8.encode(text);
       final blob = Blob([bytes]);
       js.context.callMethod("webSaveAs", [blob, _filename]);
-      setState(() {
-        widget.pageRef1.nextPage.disabled = false;
-        widget.pageRef1.nextPage.nextPage.disabled = false;
-      });
-      widget.controller.animateTo(2320, duration: Duration(milliseconds: 100), curve: Curves.ease);
+      widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
     }
   }
 
@@ -128,13 +128,13 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * to the main info page. Sets the other pages to be disabled.
    */
   void mainInfoPage() {
-    if (!widget.disabled) {
+    // if (!widget.disabled) {
       setState(() {
         widget.pageRef1.nextPage.disabled = true;
         widget.disabled = true;
-        widget.controller.jumpTo(3);
       });
-    }
+      widget.controller.jumpTo(3);
+    // }
   }
 
   /*
@@ -143,13 +143,13 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * later pages to be disabled.
    */
   void chooseFilePage() {
-    if (!widget.disabled) {
+    // if (!widget.disabled) {
       setState(() {
         widget.pageRef1.nextPage.disabled = true;
         widget.disabled = true;
-        widget.controller.jumpTo(750);
       });
-    }
+      widget.controller.jumpTo(750);
+    // }
   }
 
   /*

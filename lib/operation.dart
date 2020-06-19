@@ -89,7 +89,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
     setState(() {
       widget.fixedFileContent = result;
       widget.nextPage.setFixedFileContents(widget.fixedFileContent);
-      widget.controller.animateTo(2310, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      widget.controller.animateTo(2300, duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
