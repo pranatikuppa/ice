@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
-import 'dart:html' as html;
+import 'dart:html';
 import 'dart:js' as js;
 import 'package:flutter/material.dart';
 import 'package:ICE/operation.dart';
@@ -113,9 +113,10 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
       _filename = cleanFilename(_textController.text);
       final text = widget.finalFixedFileContents;
       final bytes = utf8.encode(text);
-      final blob = html.Blob([bytes]);
+      final blob = Blob([bytes]);
       js.context.callMethod("webSaveAs", [blob, _filename]);
     }
+    widget.controller.animateTo(2410, duration: Duration(milliseconds: 100), curve: Curves.ease);
   }
 
   /*
@@ -123,11 +124,13 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * to the main info page. Sets the other pages to be disabled.
    */
   void mainInfoPage() {
-    setState(() {
-      widget.pageRef1.nextPage.disabled = true;
-      widget.disabled = true;
-      widget.controller.jumpTo(3);
-    });
+    if (!widget.disabled) {
+      setState(() {
+        widget.pageRef1.nextPage.disabled = true;
+        widget.disabled = true;
+        widget.controller.jumpTo(3);
+      });
+    }
   }
 
   /*
@@ -136,11 +139,13 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * later pages to be disabled.
    */
   void chooseFilePage() {
-    setState(() {
-      widget.pageRef1.nextPage.disabled = true;
-      widget.disabled = true;
-      widget.controller.jumpTo(750);
-    });
+    if (!widget.disabled) {
+      setState(() {
+        widget.pageRef1.nextPage.disabled = true;
+        widget.disabled = true;
+        widget.controller.jumpTo(750);
+      });
+    }
   }
 
   /*
@@ -175,8 +180,8 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
       color: midCyan,
       elevation: 0,
       focusElevation: 1.5,
-      disabledColor: darkCyan,
-      textColor: lightCyan,
+      disabledColor: lightCyan,
+      textColor: Colors.white,
       padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
       clipBehavior: Clip.none,
       child: Container(
