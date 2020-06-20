@@ -87,7 +87,6 @@ class _MyOperationPageState extends State<MyOperationPage> {
    */
   void nextPage(String result) {
     widget.controller.animateToPage(3, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    // widget.controller.animateTo(2300, duration: Duration(milliseconds: 500), curve: Curves.ease);
     setState(() {
       widget.fixedFileContent = result;
       widget.nextPage.setFixedFileContents(widget.fixedFileContent);
@@ -215,7 +214,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
    * the method to be called upon pressing, the button text
    * and the opacity of the button.  
    */
-  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, Icon customIcon, double size) {
+  AnimatedOpacity getOpacityButton(var method, String buttonText, double opac, Icon customIcon, double size, double hInset, double vInset) {
     return AnimatedOpacity(
       child: RaisedButton(
         onPressed: () {
@@ -229,7 +228,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
         elevation: 0,
         focusElevation: 1.5,
         textColor: lightCyan,
-        padding: EdgeInsets.only(left: 30, right: 32, top: 17, bottom: 17),
+        padding: EdgeInsets.only(left: hInset, right: hInset, top: vInset, bottom: vInset),
         clipBehavior: Clip.none,
         child: Container(
           child: Row(
@@ -281,19 +280,24 @@ class _MyOperationPageState extends State<MyOperationPage> {
 
   @override
   Widget build(BuildContext context) {  
+    /* Measurements used to resize elements based on window size. */
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double scale = (width * height) / 10000;
+
     /* Icons for each of the buttons for each operation. */
-    Icon jIcon = Icon(Icons.description, color: lightCyan);
-    Icon sIcon = Icon(Icons.subject, color: lightCyan);
-    Icon mIcon = Icon(Icons.code, color: lightCyan);
-    Icon wIcon = Icon(Icons.space_bar, color: lightCyan);
-    Icon iIcon = Icon(Icons.format_indent_increase, color: lightCyan);
+    Icon jIcon = Icon(Icons.description, color: lightCyan, size: scale * 0.161);
+    Icon sIcon = Icon(Icons.subject, color: lightCyan, size: scale * 0.161);
+    Icon mIcon = Icon(Icons.code, color: lightCyan, size: scale * 0.161);
+    Icon wIcon = Icon(Icons.space_bar, color: lightCyan, size: scale * 0.161);
+    Icon iIcon = Icon(Icons.format_indent_increase, color: lightCyan, size: scale * 0.161);
 
     /* Buttons for each operation provided in the application. */
-    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity, jIcon, 18);
-    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity, sIcon, 18);
-    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity, mIcon, 18);
-    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity, wIcon, 18); 
-    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity, iIcon, 18);
+    AnimatedOpacity javadocButton = getOpacityButton(setJavadoc, '  Javadocs', _javadocOpacity, jIcon, scale * 0.157, scale * 0.261, scale * 0.131);
+    AnimatedOpacity singleLineButton = getOpacityButton(setSingleLine, '  // Comments', _singleCommentOpacity, sIcon, scale * 0.157, scale * 0.261, scale * 0.131);
+    AnimatedOpacity multiCommentButton = getOpacityButton(setMultiLine, '  /* Comments', _multiCommentOpacity, mIcon, scale * 0.157, scale * 0.261, scale * 0.131);
+    AnimatedOpacity whitespaceButton = getOpacityButton(setWhitespaces, '  Whitespaces', _whitespaceOpacity, wIcon, scale * 0.157, scale * 0.261, scale * 0.131); 
+    AnimatedOpacity indentationButton = getOpacityButton(setIndentation, '  Indentations', _indentationOpacity, iIcon, scale * 0.157, scale * 0.261, scale * 0.131);
 
     /* The container widget that displays all the UI elements of the page seciton. */
     return Container(
@@ -305,9 +309,9 @@ class _MyOperationPageState extends State<MyOperationPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getText(80, 'Choose an operation', midCyan, TextAlign.center),
+              getText(scale * 0.696, 'Choose an operation', midCyan, TextAlign.center),
               getText(
-                20,
+                scale * 0.174,
                 'Choose the operations you want to perform on the .java files. The software will ' +
                 'only apply\nthe selected operations on the contents of the .java file and you can download' +
                 ' the fixed version in the next step:\n\n',
@@ -322,7 +326,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       javadocButton,
-                      getText(15, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
+                      getText(scale * 0.131, '\nAdds Missing\nJavadocs', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_javadocIcon),
                     ],
@@ -332,7 +336,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       singleLineButton,
-                      getText(15, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
+                      getText(scale * 0.131, '\nRemoves Single\nLine Comments', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_singleCommentIcon),
                     ],
@@ -342,7 +346,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       multiCommentButton,
-                      getText(15, '\nRemoves Multi\nLine Comments', darkCyan, TextAlign.center),
+                      getText(scale * 0.131, '\nRemoves Multi\nLine Comments', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_multiCommentIcon),
                     ],
@@ -359,7 +363,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       whitespaceButton,
-                      getText(15, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
+                      getText(scale * 0.131, '\nFixes Incorrect\nWhitespaces', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_whitespaceIcon),
                     ],
@@ -369,7 +373,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       indentationButton,
-                      getText(15, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
+                      getText(scale * 0.131, '\nFixes Incorrect\nIndentations', darkCyan, TextAlign.center),
                       Text(''),
                       getIcon(_indentationIcon),
                     ],
@@ -400,10 +404,10 @@ class _MyOperationPageState extends State<MyOperationPage> {
                 focusElevation: 1.5,
                 disabledColor: darkCyan,
                 textColor: lightCyan,
-                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                padding: EdgeInsets.only(left: scale * 0.261, right: scale * 0.261, top: scale * 0.131, bottom: scale * 0.131),
                 clipBehavior: Clip.none,
                 child: Container(
-                  child: getText (18, 'Run', lightCyan, TextAlign.center),
+                  child: getText (scale * 0.157, 'Run', lightCyan, TextAlign.center),
                 ),
               ),
               Text(

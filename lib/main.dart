@@ -77,6 +77,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     /* Measurements used to resize elements based on window size. */
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double scale = (width * height) / 10000;
 
     /* Widget that controlls the scrolling of the page. */
     PageController scrollController = PageController(initialPage: 0);
@@ -93,31 +95,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     /* Setting the page references for the file download page. */
     fileDownloadPage.setPageRef1(directoryPage);
     fileDownloadPage.setPageRef2(widget);
-
-    /*
-     * Listener for the scroll controller that jumps back to a certain 
-     * scroll position based on which pages are disabled. 
-     */
-    // scrollListener() {
-    //   print(operationPage.disabled);
-    //   print(fileDownloadPage.disabled);
-    //   if (operationPage.disabled && fileDownloadPage.disabled) {
-    //     // if (scrollController.offset > 750) {
-    //     //   scrollController.jumpTo(749);
-    //     // }
-    //   }
-    //   if (fileDownloadPage.disabled) {
-    //     if (scrollController.offset > 1500) {
-    //       scrollController.jumpTo(1499);
-    //     }
-    //   }
-    // }
-
-    /* Adding listeners to the scroll controller and pages. */
-    // scrollController.addListener(scrollListener);
-    // directoryPage.setListener(scrollListener);
-    // operationPage.setListener(scrollListener);
-    // fileDownloadPage.setListener(scrollListener);
 
     /* Main scaffold widget of the app that displays the UI elements. */
     return Scaffold(
@@ -142,117 +119,110 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         ],
         backgroundColor: lightCyan,
         elevation: 2,
-        title: getText(15, 'ICEcap v1.0', midCyan, TextAlign.center),
+        title: getText(15, 'ICEcΔp v1.0', midCyan, TextAlign.center),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: 1440,
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            controller: scrollController,
-            children: [
-              Container(
-                height: 750,
-                color: lightCyan,
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image(
-                          alignment: Alignment.center,
-                          repeat: ImageRepeat.noRepeat,
-                          image: AssetImage('assets/mountains.png'),
-                          width: 450,
-                          height: 450,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            getText(150, 'ICEcΔp', midCyan, TextAlign.left),
-                            getText(28, '(Interactive Convention Editor)\n\n', midCyan, TextAlign.left),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        getText(
-                          22, 
-                          'We all have faced issues with the 200+ style check' + 
-                          ' errors that appear right when we are ready to submit ' + 
-                          'our\nCS 61B projects. In three easy steps below you can get rid of many style check errors from your project.\n\n',
-                          darkCyan,
-                          TextAlign.center
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            scrollController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
-                            // scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
-                          },
-                          color: midCyan,
-                          textColor: lightCyan,
-                          elevation: 0,
-                          padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                          focusElevation: 2.0,
-                          child: getText(18, 'Start', lightCyan, TextAlign.center),
-                        ),
-                        Text("\n\n\n"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 750,
-                color: Colors.white,
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(top: 30, bottom: 30),
-                child: directoryPage,
-              ),
-              Container(
-                height: 750,
-                color: lightCyan,
-                alignment: Alignment.center,
-                child: operationPage,
-              ),
-              Container(
-                height: 750,
-                color: Colors.white,
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(top: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    fileDownloadPage,
-                    Container(
-                      color: lightCyan,
-                      height: 60,
-                      alignment: Alignment.center,
-                      child: Text(
-                        "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                          fontStyle: FontStyle.italic,
-                          color: darkCyan,
-                        ),
+      body: FractionallySizedBox (
+        // child: SingleChildScrollView (
+        child: PageView(
+          physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          controller: scrollController,
+          children: [
+            Container(
+              color: lightCyan,
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image(
+                        alignment: Alignment.center,
+                        repeat: ImageRepeat.noRepeat,
+                        image: AssetImage('assets/mountains.png'),
+                        width: scale * 3.916,
+                        height: scale * 3.916,
                       ),
-                    ), 
-                  ],
-                ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          getText(scale * 1.31, 'ICEcΔp', midCyan, TextAlign.left),
+                          getText(scale * 0.244, '(Interactive Convention Editor)\n\n', midCyan, TextAlign.left),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      getText(
+                        scale * 0.191, 
+                        'We all have faced issues with the 200+ style check' + 
+                        ' errors that appear right when we are ready to submit ' + 
+                        'our\nCS 61B projects. In three easy steps below you can get rid of many style check errors from your project.\n\n',
+                        darkCyan,
+                        TextAlign.center
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          scrollController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                        },
+                        color: midCyan,
+                        textColor: lightCyan,
+                        elevation: 0,
+                        padding: EdgeInsets.only(left: scale * 0.261, right: scale * 0.261, top: scale * 0.131, bottom: scale * 0.131),
+                        focusElevation: 2.0,
+                        child: getText(scale * 0.157, 'Start', lightCyan, TextAlign.center),
+                      ),
+                      Text("\n\n\n"),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: scale * 0.261, bottom: scale * 0.261),
+              child: directoryPage,
+            ),
+            Container(
+              color: lightCyan,
+              alignment: Alignment.center,
+              child: operationPage,
+            ),
+            Container(
+              color: Colors.white,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: scale * 0.261),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  fileDownloadPage,
+                  Container(
+                    color: lightCyan,
+                    height: scale * 0.522,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "Open Sans",
+                        fontSize: scale * 0.131,
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.italic,
+                        color: darkCyan,
+                      ),
+                    ),
+                  ), 
+                ],
+              ),
+            ),
+          ],
         ),
+        // ),
       ),
     );
   }

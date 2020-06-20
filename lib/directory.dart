@@ -55,20 +55,12 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
   Text _displayText = Text('');
   Color _iconColor = Colors.white;
   String _fileName = "";
-  Text _errorText = Text(
-      '* Please select a file (.java file)',
-      style: TextStyle(
-        color: Colors.red,
-        fontFamily: "Open Sans",
-        fontWeight: FontWeight.w300,
-      ),
-    );
 
   /*
    * Method that uses the HTML plugin to 
    * open the upload dialog on the device. 
    */
-  uploadFiles() async {
+  uploadFiles(double errorSize, double filenameSize) async {
     InputElement uploadInput = FileUploadInputElement();
     uploadInput.multiple = true;
     uploadInput.accept = ".java";
@@ -84,14 +76,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
             _fileString = _stringData;
             _fileName = file.name;
             if (_fileString.isNotEmpty) {
-              _displayText = Text(
-                _fileName,
-                style: TextStyle(
-                  color: darkCyan,
-                  fontFamily: "Open Sans",
-                  fontWeight: FontWeight.w300,
-                ),
-              );
+              _displayText = getText(filenameSize, _fileName, darkCyan);
               _iconColor = midCyan;
               _validFileChosen = true;
             }
@@ -100,7 +85,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
         reader.onError.listen((event) {
           setState(() {
             _iconColor = lightCyan;
-            _displayText = _errorText;
+            _displayText = getErrorText(errorSize);
             _validFileChosen = false;
           });
         });
@@ -119,6 +104,18 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
     }
   }
 
+  Text getErrorText(double tSize) {
+    return Text(
+      '* Please select a file (.java file)',
+      style: TextStyle(
+        color: Colors.red,
+        fontFamily: "Open Sans",
+        fontWeight: FontWeight.w300,
+        fontSize: tSize,
+      ),
+    );
+  }
+
   /*
    * Changes the state of the page by moving to the next page.
    * Scrolls down with the scroll controller and passes along 
@@ -126,7 +123,6 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
    */
   void nextPage() {
     widget.controller.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    // widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
     setState(() {
       widget.nextPage.setFileContents(_fileString);
     });
@@ -158,6 +154,11 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
 
 @override
   Widget build(BuildContext context) {
+    /* Measurements used to resize elements based on window size. */
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double scale = (width * height) / 10000;
+
     /* The container widget that contains the UI elements of this page section. */
     return Container(
       color: Colors.white,
@@ -168,16 +169,16 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getText(80, 'Choose a file', midCyan),
+              getText(scale * 0.696, 'Choose a file', midCyan),
               getText(
-                20,
+                scale * 0.174,
                 'Upload a file (.java file) you would like the program to clear\nstyle check errors:\n\n',
                 darkCyan
               ),
               Container(
                 padding: EdgeInsets.only(left: 20),
-                width: 450,
-                height: 60,
+                width: scale * 3.92,
+                height: scale * 0.522,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: midCyan,
@@ -200,14 +201,14 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
               Text('\n\n'),
               RaisedButton(
                 onPressed: () {
-                  uploadFiles();
+                  uploadFiles(scale * 0.147, scale * 0.147);
                 },
                 color: midCyan,
                 textColor: lightCyan,
                 elevation: 0,
-                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                padding: EdgeInsets.only(left: scale * 0.261, right: scale * 0.261, top: scale * 0.131, bottom: scale * 0.131),
                 focusElevation: 2.0,
-                child: getText(18, 'Upload File', lightCyan),
+                child: getText(scale * 0.157, 'Upload File', lightCyan),
               ),
               Text('\n\n'),
               RaisedButton(
@@ -215,7 +216,7 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
                   validateFile();
                   if (!_validFileChosen) {
                     setState(() {
-                      _displayText = _errorText;
+                      _displayText = getErrorText(scale * 0.147);
                     });
                   } else {
                     setState(() {
@@ -228,9 +229,9 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
                 color: midCyan,
                 textColor: lightCyan,
                 elevation: 0,
-                padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+                padding: EdgeInsets.only(left: scale * 0.261, right: scale * 0.261, top: scale * 0.131, bottom: scale * 0.131),
                 focusElevation: 2.0,
-                child: getText(18, 'Continue', lightCyan),
+                child: getText(scale * 0.157, 'Continue', lightCyan),
               ),
             ],
           ),

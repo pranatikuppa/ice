@@ -113,7 +113,6 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
         widget.pageRef1.nextPage.disabled = false;
         widget.disabled = false;
     });
-    // widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
     _filename = cleanFilename(_textController.text);
     final text = widget.finalFixedFileContents;
     final bytes = utf8.encode(text);
@@ -132,14 +131,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * to the main info page. Sets the other pages to be disabled.
    */
   void mainInfoPage() {
-    // if (!widget.disabled) {
-      // widget.controller.addListener(widget.listener);
-      setState(() {
-        widget.pageRef1.nextPage.disabled = true;
-        widget.disabled = true;
-      });
-      widget.controller.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    // }
+    setState(() {
+      widget.pageRef1.nextPage.disabled = true;
+      widget.disabled = true;
+    });
+    widget.controller.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   /*
@@ -148,15 +144,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * later pages to be disabled.
    */
   void chooseFilePage() {
-    // if (!widget.disabled) {
-      // widget.controller.addListener(widget.listener);
-      setState(() {
-        widget.pageRef1.nextPage.disabled = true;
-        widget.disabled = true;
-      });
-      // widget.controller.jumpTo(750);
-      widget.controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    // }
+    setState(() {
+      widget.pageRef1.nextPage.disabled = true;
+      widget.disabled = true;
+    });
+    widget.controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   /*
@@ -181,19 +173,17 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    * method to be called upon on pressed, the button text and 
    * the size of the button.  
    */
-  RaisedButton getButton(var method, String buttonText, double size) {
+  RaisedButton getButton(var method, String buttonText, double size, double hInset, double vInset) {
     return RaisedButton(
       onPressed: () {
-        // if (!widget.disabled) {
-          method();
-        // }
+        method();
       },
       color: midCyan,
       elevation: 0,
       focusElevation: 1.5,
       disabledColor: lightCyan,
       textColor: Colors.white,
-      padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+      padding: EdgeInsets.only(left: hInset, right: hInset, top: vInset, bottom: vInset),
       clipBehavior: Clip.none,
       child: Container(
         child: Text(
@@ -210,6 +200,11 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
 
   @override
   Widget build(BuildContext context) {
+    /* Measurements used to resize elements based on window size. */
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double scale = (width * height) / 10000;
+
     /* The container widget that displays all the UI elements of the page section. */
     return Container(
       color: Colors.white,
@@ -217,16 +212,16 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget> [
-          getText(80, 'Download your file', midCyan),
+          getText(scale * 0.696, 'Download your file', midCyan),
           getText(
-            20,
+            scale * 0.174,
             'Type in the name you want for the file (ex. filename.java) and then click "Download File."\n' +
             'If you do not enter a name for the file we will give it a generic name:\n\n',
             darkCyan,
           ),
           Container(
-            width: 450,
-            height: 60,
+            width: scale * 3.92,
+            height: scale * 0.522,
             child: TextField(
               onChanged: (String t) {
                 _filename = t;
@@ -257,23 +252,21 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
           Text("\n\n"),
           RaisedButton(
             onPressed: () async {
-              // if (!widget.disabled) {
-                downloadFile();
-              // }
+              downloadFile();
             },
             color: midCyan,
             elevation: 0,
             focusElevation: 1.5,
             disabledColor: darkCyan,
             textColor: lightCyan,
-            padding: EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
+            padding: EdgeInsets.only(left: scale * 0.261, right: scale * 0.261, top: scale * 0.131, bottom: scale * 0.131),
             clipBehavior: Clip.none,
             child: Container(
               child: Text(
                 'Download File',
                 style: TextStyle(
                   fontFamily: "Open Sans",
-                  fontSize: 18,
+                  fontSize: scale * 0.157,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -283,9 +276,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              getButton(chooseFilePage, 'Choose New File', 18),
+              getButton(chooseFilePage, 'Choose New File', scale * 0.157, scale * 0.261, scale * 0.131),
               Text("\t\t"),
-              getButton(mainInfoPage, 'Go To Main Page', 18),
+              getButton(mainInfoPage, 'Go To Main Page', scale * 0.157, scale * 0.261, scale * 0.131),
             ],
           ),
         ],
