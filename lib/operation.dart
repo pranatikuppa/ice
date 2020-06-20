@@ -34,7 +34,7 @@ class MyOperationPage extends StatefulWidget {
   
   /* Instances variables of the operation page section */
   bool disabled;
-  final ScrollController controller;
+  final PageController controller;
   final MyFileDownloadPage nextPage; 
   String fileContents;
   String fixedFileContent;
@@ -86,7 +86,8 @@ class _MyOperationPageState extends State<MyOperationPage> {
    * user data.
    */
   void nextPage(String result) {
-    widget.controller.animateTo(2300, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    widget.controller.animateToPage(3, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    // widget.controller.animateTo(2300, duration: Duration(milliseconds: 500), curve: Curves.ease);
     setState(() {
       widget.fixedFileContent = result;
       widget.nextPage.setFixedFileContents(widget.fixedFileContent);
@@ -378,7 +379,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
               Text('\n'),
               RaisedButton(
                 onPressed: () {
-                  if (!widget.disabled) {
+                  // if (!widget.disabled) {
                     if (!_javadoc && !_singleComment && !_multiComment && !_indentation && !_whitespace) {
                       setState(() {
                         _errorColor = Colors.red;
@@ -392,7 +393,7 @@ class _MyOperationPageState extends State<MyOperationPage> {
                       });
                       nextPage(result);
                     }
-                  }
+                  // }
                 },
                 color: midCyan,
                 elevation: 0,

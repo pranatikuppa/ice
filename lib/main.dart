@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     double width = MediaQuery.of(context).size.width;
 
     /* Widget that controlls the scrolling of the page. */
-    ScrollController scrollController = ScrollController();
+    PageController scrollController = PageController(initialPage: 0);
 
     /* File download page where users download their fixed java files. */
     MyFileDownloadPage fileDownloadPage = MyFileDownloadPage(homepage: widget, controller: scrollController, disabled: true);
@@ -98,24 +98,26 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
      * Listener for the scroll controller that jumps back to a certain 
      * scroll position based on which pages are disabled. 
      */
-    scrollListener() {
-      if (operationPage.disabled && fileDownloadPage.disabled) {
-        if (scrollController.offset > 750) {
-          scrollController.jumpTo(749);
-        }
-      }
-      if (fileDownloadPage.disabled) {
-          if (scrollController.offset > 1500) {
-            scrollController.jumpTo(1499);
-          }
-      }
-    }
+    // scrollListener() {
+    //   print(operationPage.disabled);
+    //   print(fileDownloadPage.disabled);
+    //   if (operationPage.disabled && fileDownloadPage.disabled) {
+    //     // if (scrollController.offset > 750) {
+    //     //   scrollController.jumpTo(749);
+    //     // }
+    //   }
+    //   if (fileDownloadPage.disabled) {
+    //     if (scrollController.offset > 1500) {
+    //       scrollController.jumpTo(1499);
+    //     }
+    //   }
+    // }
 
     /* Adding listeners to the scroll controller and pages. */
-    scrollController.addListener(scrollListener);
-    directoryPage.setListener(scrollListener);
-    operationPage.setListener(scrollListener);
-    fileDownloadPage.setListener(scrollListener);
+    // scrollController.addListener(scrollListener);
+    // directoryPage.setListener(scrollListener);
+    // operationPage.setListener(scrollListener);
+    // fileDownloadPage.setListener(scrollListener);
 
     /* Main scaffold widget of the app that displays the UI elements. */
     return Scaffold(
@@ -146,7 +148,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         scrollDirection: Axis.horizontal,
         child: SizedBox(
           width: 1440,
-          child: ListView(
+          child: PageView(
+            physics: NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
             controller: scrollController,
             children: [
               Container(
@@ -189,7 +193,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                         ),
                         RaisedButton(
                           onPressed: () {
-                            scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                            scrollController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                            // scrollController.animateTo(750, duration: Duration(milliseconds: 500), curve: Curves.ease);
                           },
                           color: midCyan,
                           textColor: lightCyan,
@@ -208,6 +213,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 height: 750,
                 color: Colors.white,
                 alignment: Alignment.center,
+                padding: EdgeInsets.only(top: 30, bottom: 30),
                 child: directoryPage,
               ),
               Container(
@@ -220,24 +226,30 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 height: 750,
                 color: Colors.white,
                 alignment: Alignment.center,
-                child: fileDownloadPage,
-              ),
-              Container(
-                color: lightCyan,
-                height: 60,
-                alignment: Alignment.center,
-                child: Text(
-                  "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: "Open Sans",
-                    fontSize: 15,
-                    fontWeight: FontWeight.w300,
-                    fontStyle: FontStyle.italic,
-                    color: darkCyan,
-                  ),
+                padding: EdgeInsets.only(top: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    fileDownloadPage,
+                    Container(
+                      color: lightCyan,
+                      height: 60,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "\nCreated by two fellow 61Bers, Pranati & Khushi\n",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: "Open Sans",
+                          fontSize: 15,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.italic,
+                          color: darkCyan,
+                        ),
+                      ),
+                    ), 
+                  ],
                 ),
-              ), 
+              ),
             ],
           ),
         ),

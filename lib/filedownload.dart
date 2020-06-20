@@ -32,7 +32,7 @@ class MyFileDownloadPage extends StatefulWidget {
 
   /* Instances variables of the file download page section. */
   final String contents;
-  final ScrollController controller;
+  final PageController controller;
   MyDirectoryPage pageRef1;
   MyHomePage pageRef2;
   bool disabled;
@@ -113,12 +113,12 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
         widget.pageRef1.nextPage.disabled = false;
         widget.disabled = false;
     });
+    // widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
     _filename = cleanFilename(_textController.text);
     final text = widget.finalFixedFileContents;
     final bytes = utf8.encode(text);
     final blob = Blob([bytes]);
     js.context.callMethod("webSaveAs", [blob, _filename]);
-    widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
     setState(() {
         widget.pageRef1.nextPage.disabled = false;
         widget.disabled = false;
@@ -133,11 +133,12 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    */
   void mainInfoPage() {
     // if (!widget.disabled) {
+      // widget.controller.addListener(widget.listener);
       setState(() {
         widget.pageRef1.nextPage.disabled = true;
         widget.disabled = true;
       });
-      widget.controller.jumpTo(3);
+      widget.controller.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
     // }
   }
 
@@ -148,11 +149,13 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
    */
   void chooseFilePage() {
     // if (!widget.disabled) {
+      // widget.controller.addListener(widget.listener);
       setState(() {
         widget.pageRef1.nextPage.disabled = true;
         widget.disabled = true;
       });
-      widget.controller.jumpTo(750);
+      // widget.controller.jumpTo(750);
+      widget.controller.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.ease);
     // }
   }
 

@@ -28,7 +28,7 @@ class MyDirectoryPage extends StatefulWidget {
   MyDirectoryPage({Key key, this.homepage, this.controller, this.nextPage, this.listener}) : super(key:key);
 
   /* Instance variables of the file page section. */
-  final ScrollController controller;
+  final PageController controller;
   final MyOperationPage nextPage;
   final MyHomePage homepage;
   var listener;
@@ -125,7 +125,8 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
    * user data to the next page.
    */
   void nextPage() {
-    widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    widget.controller.animateToPage(2, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    // widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
     setState(() {
       widget.nextPage.setFileContents(_fileString);
     });
