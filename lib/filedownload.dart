@@ -113,14 +113,18 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
         widget.pageRef1.nextPage.disabled = false;
         widget.disabled = false;
     });
-    if (!widget.disabled) {
-      _filename = cleanFilename(_textController.text);
-      final text = widget.finalFixedFileContents;
-      final bytes = utf8.encode(text);
-      final blob = Blob([bytes]);
-      js.context.callMethod("webSaveAs", [blob, _filename]);
-      widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
-    }
+    _filename = cleanFilename(_textController.text);
+    final text = widget.finalFixedFileContents;
+    final bytes = utf8.encode(text);
+    final blob = Blob([bytes]);
+    js.context.callMethod("webSaveAs", [blob, _filename]);
+    widget.controller.animateTo(2310, duration: Duration(milliseconds: 100), curve: Curves.ease);
+    setState(() {
+        widget.pageRef1.nextPage.disabled = false;
+        widget.disabled = false;
+    });
+    print(widget.pageRef1.nextPage.disabled);
+    print(widget.disabled);
   }
 
   /*
@@ -177,9 +181,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
   RaisedButton getButton(var method, String buttonText, double size) {
     return RaisedButton(
       onPressed: () {
-        if (!widget.disabled) {
+        // if (!widget.disabled) {
           method();
-        }
+        // }
       },
       color: midCyan,
       elevation: 0,
@@ -250,9 +254,9 @@ class _MyFileDownloadPageState extends State<MyFileDownloadPage> {
           Text("\n\n"),
           RaisedButton(
             onPressed: () async {
-              if (!widget.disabled) {
+              // if (!widget.disabled) {
                 downloadFile();
-              }
+              // }
             },
             color: midCyan,
             elevation: 0,

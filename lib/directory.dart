@@ -125,8 +125,8 @@ class _MyDirectoryPageState extends State<MyDirectoryPage> {
    * user data to the next page.
    */
   void nextPage() {
+    widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
     setState(() {
-      widget.controller.animateTo(1500, duration: Duration(milliseconds: 500), curve: Curves.ease);
       widget.nextPage.setFileContents(_fileString);
     });
   }
