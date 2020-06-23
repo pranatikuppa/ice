@@ -122,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: getText(15, 'ICEcΔp v1.0', midCyan, TextAlign.center),
       ),
       body: FractionallySizedBox (
+        alignment: Alignment.center,
         // child: SingleChildScrollView (
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
