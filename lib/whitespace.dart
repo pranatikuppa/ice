@@ -59,20 +59,23 @@ class Whitespace {
         int numPotentialErrs = numItems(line, item, itemLen);
         List<int> indices = allIndices(line, item, ind, itemLen);
         for (int i = 0; i < numPotentialErrs; i++) {
-          if (toWrite == "") {
-            if (charAt(line, indices[i] - 1) == " ") {
-              toWrite = line.substring(0, indices[i]).trimRight();
-              toWrite += line.substring(indices[i]);
-              indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
-              changed = true;
-            }
-          } else {
-            String temp = toWrite.substring(indices[i]);
-            toWrite = toWrite.substring(0, indices[i]).trimRight();
-            toWrite += temp;
-            indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
-            changed = true;
-          }
+		if (!checkJavaDocInterfere(line)) {
+			if (toWrite == "") {
+            			if (charAt(line, indices[i] - 1) == " ") {
+              				toWrite = line.substring(0, indices[i]).trimRight();
+              				toWrite += line.substring(indices[i]);
+              				indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
+              				changed = true;
+            			}
+          		} else {
+            			String temp = toWrite.substring(indices[i]);
+            			toWrite = toWrite.substring(0, indices[i]).trimRight();
+            			toWrite += temp;
+            			indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
+		    		changed = true;
+          		}
+		}
+          
         }
         if (toWrite != "") {
           fileContent += toWrite;
@@ -111,20 +114,23 @@ class Whitespace {
         int numPotentialErrs = numItems(line, item, itemLen);
         List<int> indices = allIndices(line, item, ind, itemLen);
         for (int i = 0; i < numPotentialErrs; i++) {
-          if (toWrite == "") {
-            if (charAt(line, indices[i] + 1) == " ") {
-              toWrite = line.substring(0, indices[i] + itemLen);
-              toWrite += line.substring(indices[i] + itemLen).trimLeft();
-              indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
-              changed = true;
-            }
-          } else {
-            String temp = toWrite.substring(indices[i] + itemLen).trimLeft();
-            toWrite = toWrite.substring(0, indices[i] + itemLen);
-            toWrite += temp;
-            indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
-            changed = true;
-          }
+		if (!checkJavaDocInterfere(line) {
+			if (toWrite == "") {
+			    if (charAt(line, indices[i] + 1) == " ") {
+			      toWrite = line.substring(0, indices[i] + itemLen);
+			      toWrite += line.substring(indices[i] + itemLen).trimLeft();
+			      indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
+			      changed = true;
+			    }
+		  	} else {
+		    		String temp = toWrite.substring(indices[i] + itemLen).trimLeft();
+				    toWrite = toWrite.substring(0, indices[i] + itemLen);
+				    toWrite += temp;
+				    indices = allIndices(toWrite, item, toWrite.indexOf(item, 0), itemLen);
+				    changed = true;
+		  	}
+		}
+          
         }
         if (toWrite != "") {
           fileContent += toWrite;
@@ -164,31 +170,45 @@ class Whitespace {
         int numPotentialErrs = numItems(line, item, itemLen);
         List<int> indices = allIndices(line, item, ind, itemLen);
         for (int i = 0; i < numPotentialErrs; i++) {
-          if (toWrite == "") {
-            proper = getProperBefore(line, ind);
-            if (charAt(line, ind - 1) != " " && !checkMult(line, item) 
-              && !checkMultiComment(line, item, indices[i])) {
-              toWrite = line.substring(0, indices[i]);
-              toWrite += " " + line.substring(indices[i]);
-              indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
-              changed = true;
-            } else if (proper.trim() != line.trim() && !checkMult(line, item) 
-              && !checkMultiComment(line, item, indices[i])) {
-              toWrite = line.substring(0, indices[i]).trimRight();
-              toWrite += " " + line.substring(indices[i]);
-              indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
-              changed = true;
-            }
-          } else {
-            if (!checkMult(toWrite, item) && !checkMultiComment(toWrite, item, indices[i])) {
-              proper = getProperBefore(toWrite, indices[i]);
-              String temp = " " + toWrite.substring(indices[i]);
-              toWrite = toWrite.substring(0, indices[i]).trimRight();
-              toWrite += temp;
-              indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
-              changed = true;
-            }
-          }
+		if (!checkJavaDocInterfere(line)) { 
+			if (toWrite == "") {
+			    proper = getProperBefore(line, ind);
+			if (ind == 0 && !checkMult(line, item) 
+			&& !checkMultiComment(line, item, indices.get(i))) {
+				toWrite = line.substring(0, indices.get(i)); 
+				toWrite += " " + line.substring(indices.get(i)); 
+				indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
+				changed = true; 
+			}
+			if (ind != 0) {
+				if (charAt(line, ind - 1) != " " && !checkMult(line, item) 
+			      && !checkMultiComment(line, item, indices[i])) {
+			      		toWrite = line.substring(0, indices[i]);
+			      		toWrite += " " + line.substring(indices[i]);
+			      		indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
+			      		changed = true;
+			    } else if (proper.trim() != line.trim() && !checkMult(line, item) 
+			      && !checkMultiComment(line, item, indices[i])) {
+			      		toWrite = line.substring(0, indices[i]).trimRight();
+			      		toWrite += " " + line.substring(indices[i]);
+			      		indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
+			      		changed = true;
+			    }
+			
+			}
+			    
+			} else {
+			    if (!checkMult(toWrite, item) && !checkMultiComment(toWrite, item, indices[i])) {
+			      proper = getProperBefore(toWrite, indices[i]);
+			      String temp = " " + toWrite.substring(indices[i]);
+			      toWrite = toWrite.substring(0, indices[i]).trimRight();
+			      toWrite += temp;
+			      indices = allIndices(toWrite, item, toWrite.indexOf(item), itemLen);
+			      changed = true;
+			    }
+			  }
+		}
+          
         }
         if (toWrite != "") {
           fileContent += toWrite;
@@ -228,7 +248,8 @@ class Whitespace {
         String proper = "";
         List<int> indices = allIndices(line, item, ind, itemLen);
         for (int i = 0; i < numPotentialErrs; i++) {
-          if (toWrite == "") {
+		if (!checkJavaDocInterfere(line)) {
+			if (toWrite == "") {
             proper = getProperAfter(line, ind, itemLen);
             if (indices[i] == line.length - 1) {
               toWrite = line + " ";
@@ -255,6 +276,8 @@ class Whitespace {
               changed = true;
             }
           }
+	}
+          
         }
         if (toWrite != "") {
           fileContent += toWrite;
@@ -274,6 +297,18 @@ class Whitespace {
       lineNum++;
     }
   }
+	
+/*
+   * Reads a line and ensures that it does not interefere 
+   * with other ICEcΔp edits.
+ */
+boolean checkJavaDocInterfere(String line) {
+	if (line == "------- INCORRECT JAVADOC FORMAT -------") 
+	|| line == ("----------------------------------------")) {
+		return true; 
+	}
+	return false; 
+}
 
   /*
    * Reads a line and counts all appearances of item within
@@ -330,7 +365,8 @@ class Whitespace {
    */
   bool checkMult(String line, String item) {
     int ind = line.indexOf(item);
-    if ((item == "+" || item == "-" || item == "=")
+    if (ind != 0 && ind != (line.length-1)) {
+	    if ((item == "+" || item == "-" || item == "=")
       && (charAt(line, ind + 1) == "+" || charAt(line, ind + 1) == "-"
       || charAt(line, ind + 1) == "=")) {
       return true;
@@ -344,6 +380,30 @@ class Whitespace {
     } else {
       return false;
     }
+    } else if (ind ==0) {
+	    if ((item == "+" || item == "-" || item == "=")
+      && (charAt(line, ind + 1) == "+" || charAt(line, ind + 1) == "-"
+      || charAt(line, ind + 1) == "=")) {
+      return true;
+    } else if ((item == "+" && charAt(line, ind + 1) == "=")) {
+      return true;
+    } else if (item == "/" && charAt(line, ind + 1) == "/") {
+      return true;
+    } else {
+      return false;
+    }
+    } else if (ind != (line.length-1)) {
+	if (item == "="
+      && charAt(line, ind - 1) == "+") {
+      return true;
+    } else if (item == "/" && charAt(line, ind - 1) == "/") {
+      return true;
+    } else {
+      return false;
+	    
+    }
+	return false; 
+    
   }
 
   /*
@@ -351,9 +411,21 @@ class Whitespace {
    * a certain '/' is part of a multiline comment declaration.  
    */
   bool checkMultiSlash(String line, int ind) {
-    if (charAt(line, ind + 1) == '*' || charAt(line, ind - 1) == '*') {
-      return true;
-    }
+    if (line.trim() == "*/" || line.trim() == "/**" || line.trim() == "/*") {
+	return true; 
+    } else if (ind != 0) {
+	    if (charAt(line, ind - 1) == '*') {
+		    return true; 
+	    }
+    } else if (ind != line.length -1) {
+	    if (charAt(line, ind +1) == '*') {
+		    return true; 
+	    }
+    } else if (ind != 0 && ind != line.length -1) {
+	    if (charAt(line, ind + 1) == '*' || charAt(line, ind - 1) == '*') {
+      		return true;
+    	    }
+    }    
     return false;
   }
 
@@ -363,11 +435,25 @@ class Whitespace {
    * declaration. 
    */
   bool checkMultiStar(String line, int ind) {
-    if (charAt(line, ind + 1) == '/' || charAt(line, ind - 1) == '/') {
+    if (line.trim() == "*/" || line.trim() == "/**" || line.trim() == "/*") {
+	return true; 
+    } else if (ind != 0 && ind != line.length -1) {
+	  if (charAt(line, ind + 1) == '/' || charAt(line, ind - 1) == '/') {
       return true;
     } else if (charAt(line, ind + 1) == '*' || charAt(line, ind - 1) == '*') {
       return true; 
     }
+	return false; 
+    } else if (ind != line.length -1) {
+	     if (charAt(line, ind + 1) == '/') {
+      return true;
+    } else if (charAt(line, ind + 1) == '*') {
+      return true; 
+    }
+	return false; 
+	    
+    }
+    
     return false;
   }
 
