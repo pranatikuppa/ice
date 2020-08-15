@@ -1,5 +1,5 @@
 # ICEcΔp
-*this is a legacy version. The updated site can be found at bit.ly/icecap-ui. *
+*this is a legacy version. The updated site can be found at bit.ly/icecap-ui.*
 
  An interactive java style/convention editor, based on the guidelines as specified in the course CS 61B.
  The application is made using Flutter, and both the backend and UI are written in Dart. 
